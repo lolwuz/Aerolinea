@@ -10,21 +10,36 @@
     <script src="javascript/controls/OrbitControls.js"></script>
     <script src="objects/Scene.js"></script>
     <script src="objects/World.js"></script>
-    <script>  
+    <script>
         var scene;
-        
+
         init();
         animate();
-        
+
         function init() {
             scene = new Scene();
+            window.addEventListener('resize', onWindowResize, false);
         }
 
         function animate() {
 
             requestAnimationFrame(animate);
             scene.update();
-            
+
+        }
+
+        function onWindowResize() {
+
+            game.camera.aspect = window.innerWidth / window.innerHeight;
+            game.camera.updateProjectionMatrix();
+            game.renderer.setSize(window.innerWidth, window.innerHeight);
+
+        }
+
+        function onWindowResize() {
+            scene.camera.aspect = window.innerWidth / window.innerHeight;
+            scene.camera.updateProjectionMatrix();
+            scene.renderer.setSize(window.innerWidth, window.innerHeight);
         }
     </script>
 </body>
