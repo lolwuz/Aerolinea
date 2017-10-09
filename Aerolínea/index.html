@@ -11,6 +11,7 @@
     <script src="objects/Scene.js"></script>
     <script src="objects/World.js"></script>
     <script src="objects/Airport.js"></script>
+    <script src="objects/Plane.js"></script>
     <script>
         var scene;
 
@@ -35,12 +36,6 @@
             game.camera.updateProjectionMatrix();
             game.renderer.setSize(window.innerWidth, window.innerHeight);
 
-        }
-
-        function onWindowResize() {
-            scene.camera.aspect = window.innerWidth / window.innerHeight;
-            scene.camera.updateProjectionMatrix();
-            scene.renderer.setSize(window.innerWidth, window.innerHeight);
         }
     </script>
 </body>
