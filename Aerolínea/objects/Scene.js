@@ -4,11 +4,10 @@ class Scene extends THREE.Scene {
         // Add camera to the scene.
         this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.01, 10);
         this.renderer = new THREE.WebGLRenderer({
-            antialias: true;
+            antialias: true
         });
         this.renderer.setClearColor(0x4f99ff, 1);
-        this.renderer.shadowMap.enabled = false;
-        document.body.appendChild(renderer.domElement);
+        document.body.appendChild(this.renderer.domElement);
 
         // Add orbit controlls to the scene.
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
