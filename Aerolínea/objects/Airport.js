@@ -2,7 +2,7 @@ class Airport extends THREE.Object3D{
     constructor(position) {
         super();
         
-        this.position = position
+        this.rotationPosition = position
         
         this.pivot = new THREE.Object3D();
      
@@ -15,7 +15,7 @@ class Airport extends THREE.Object3D{
         this.pivot.add(Mesh);
         this.add(this.pivot);
 
-        this.applyRotation(this.toRad(this.position.x), this.toRad(this.position.y))
+        this.applyRotation(this.toRad(this.rotationPosition.x), this.toRad(this.rotationPosition.y))
     }
     
     applyRotation(stepZ, stepY)
