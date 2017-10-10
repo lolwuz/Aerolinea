@@ -7,13 +7,11 @@ class World extends THREE.Object3D {
         let earthBump = new THREE.TextureLoader().load("./src/textures/EarthBump.jpg");
         let earthRough = new THREE.TextureLoader().load("./src/textures/EarthSpec.jpg");
 
-        let earthMaterial = new THREE.MeshStandardMaterial({
-            metalness: 0,
-            roughness: 0.4,
+        let earthMaterial = new THREE.MeshPhongMaterial({
             map: earthTexture,
             bumpMap: earthBump,
-            roughnessMap: earthRough,
-            bumpScale: 0.005,
+            specularMap: earthRough,
+            bumpScale: 0.03,
             color: 0xFFFFFF
         });
 
