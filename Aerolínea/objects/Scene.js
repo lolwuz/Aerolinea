@@ -13,7 +13,7 @@ class Scene extends THREE.Scene {
         // Add orbit controlls to the scene.
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
         this.controls.maxDistance = 10;
-        this.controls.minDistance = 2;
+        this.controls.minDistance = 1.5;
         this.controls.enablePan = false;
         this.controls.enableRotate = true;
         this.controls.update();
@@ -25,8 +25,11 @@ class Scene extends THREE.Scene {
     }
     
     addLight(){
-        let ambient = new THREE.AmbientLight(0xFFFFFF);
+        let ambient = new THREE.AmbientLight(0xFFFFFF, 0.2);
+        let sun = new THREE.DirectionalLight(0xFFFFFF, 0.6);
+
         this.add(ambient);
+        this.add(sun); 
     }
     
     update(){
