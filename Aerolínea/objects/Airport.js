@@ -1,6 +1,8 @@
 class Airport extends THREE.Object3D{
-    constructor(longtitude, latitude) {
+    constructor(position) {
         super();
+        
+        this.position = position
         
         this.pivot = new THREE.Object3D();
      
@@ -12,7 +14,26 @@ class Airport extends THREE.Object3D{
         Mesh.position.x = 1;
         this.pivot.add(Mesh);
         this.add(this.pivot);
-        this.rotateY(latitude*Math.PI/180);
-        this.rotateZ(longtitude*Math.PI/180);
+
+        this.applyRotation(this.toRad(this.position.x), this.toRad(this.position.y))
+    }
+    
+    applyRotation(stepZ, stepY)
+    {
+        // Update ball rotation
+        let tempMat = new THREE.Matrix4();
+        tempMat.makeRotationAxis(new THREE.Vector3(0, 0, 1), stepZ);
+        tempMat.multiply(this.matrix);
+        this.matrix = tempMat;
+        tempMat = new THREE.Matrix4();
+        tempMat.makeRotationAxis(new THREE.Vector3(0, 1, 0), stepY);
+        tempMat.multiply(this.matrix);
+        this.matrix = tempMat;
+        this.rotation.setFromRotationMatrix(this.matrix);
+    }
+    
+    toRad(degrees)
+    {
+        return degrees*Math.PI/180;
     }
 }
