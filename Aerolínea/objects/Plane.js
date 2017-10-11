@@ -17,10 +17,20 @@ class Plane extends THREE.Object3D {
 
         this.position.set(0.5, 0.5, 0.5);
         // this.rotation.set();
+
         // resize object
         this.scale.set(0.1, 0.1, 0.1);
     }
 
+    // Move the plane
+    move() {
+    }
+
+    // Rotate the plane
+    applyRotation() {
+    }
+
+    // Method for creating the body/middle of the plane
     // CylinderGeometry(radiusTop, radiusBottom, height, radiusSegments, heightSegments, openEnded, thetaStart, thetaLength)
     static body() {
         let geometry = new THREE.CylinderGeometry(0.2, 0.2, 0.4, 32);
@@ -55,7 +65,7 @@ class Plane extends THREE.Object3D {
         let geometry = new THREE.Geometry();
         let material = new THREE.MeshBasicMaterial(
             {
-                color: 0x000000,
+                color: 0x000000 ,
                 side: THREE.DoubleSide
             }
         );
@@ -74,6 +84,7 @@ class Plane extends THREE.Object3D {
         let wing = new THREE.Mesh(geometry, material);
 
         wing.position.set(1.2, 1.2, 1.2);
+        wing.rotation.x = Math.PI;
 
         wing.rotation.x = Math.PI;
 
