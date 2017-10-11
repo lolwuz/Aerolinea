@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Aerolínea</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
+<<<<<<< HEAD
     <script src="javascript/three.js"></script>
     <script src="javascript/controls/OrbitControls.js"></script>
     <script src="objects/Scene.js"></script>
@@ -40,6 +42,38 @@
         }
 
     </script>
+=======
+<canvas id="gameCanvas"></canvas>
+
+<script src="javascript/three.js"></script>
+<script src="javascript/controls/OrbitControls.js"></script>
+<script src="objects/Scene.js"></script>
+<script src="objects/World.js"></script>
+<script src="objects/Airport.js"></script>
+<script src="objects/Plane.js"></script>
+<script>
+    var scene;
+
+    init();
+    animate();
+
+    function init() {
+        scene = new Scene();
+        window.addEventListener('resize', onWindowResize, false);
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        scene.update();
+    }
+
+    function onWindowResize() {
+        game.camera.aspect = window.innerWidth / window.innerHeight;
+        game.camera.updateProjectionMatrix();
+        game.renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+</script>
+>>>>>>> c2b90cb920c99fd3237e5a37b06d82509be3b493
 </body>
 
 </html>
