@@ -32,7 +32,7 @@ class Scene extends THREE.Scene {
     }
 
     addLight() {
-        this.ambient = new THREE.AmbientLight(0xFFFFFF, 0.2);
+        this.ambient = new THREE.AmbientLight(0xFFFFFF, 0.6);
         this.add(this.ambient);
         
         this.sunPivot = new THREE.Object3D();
@@ -44,9 +44,10 @@ class Scene extends THREE.Scene {
         this.add(this.sunPivot);
     }
 
-    update(delta) {
+    update() {
         this.renderer.render(this, this.camera);
         this.controls.update();
+
         // Update lighting
         this.sunPivot.rotation.y += 0.001;
         // Update world

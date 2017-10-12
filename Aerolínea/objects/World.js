@@ -2,7 +2,7 @@ class World extends THREE.Object3D {
     constructor() {
         super();
         let earthGeometry = new THREE.SphereGeometry(1, 64, 64);
-        let cloudGeometry = new THREE.SphereGeometry(1.01, 64, 64);
+        let cloudGeometry = new THREE.SphereGeometry(1.02, 64, 64);
 
         let earthTexture = new THREE.TextureLoader().load("./src/textures/rgb.jpg");
         let earthTextureE = new THREE.TextureLoader().load("./src/textures/elevate.jpg");
@@ -29,7 +29,7 @@ class World extends THREE.Object3D {
         this.earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
         this.cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial)
         this.add(this.earthMesh);
-        this.add(this.cloudMesh);
+        // this.add(this.cloudMesh);
         // this.createAirports();
     }
 
@@ -37,7 +37,7 @@ class World extends THREE.Object3D {
 
     }
 
-    update(delta) {
+    update() {
         this.cloudMesh.rotation.y -= 0.0001;    
     }
 }
