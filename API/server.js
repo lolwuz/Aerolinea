@@ -1,49 +1,72 @@
-// =======================
-// get the packages we need
-// =======================
-var express     = require('express');
-var bodyParser  = require('body-parser');
-var morgan      = require('morgan');
-var mongoose    = require('mongoose');
+// server.js
 
-var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
-var config = require('./config'); // get our config file
-var User   = require('./app/models/user'); // get our mongoose model
+// BASE SETUP
 
-// =======================
-// configuration =========
-// =======================
-var express = require('express'),
-    app = express(),
-    port = process.env.PORT || 3000;
+var mongoose   = require('mongoose');
+mongoose.connect('mongodb://default:Excalibur20@ds117935.mlab.com:17935/aerolinea'); // connect to our database
 
-app.listen(port);
+var Airliner = require('./app/models/airliner');
 
-console.log('todo list RESTful API server started on: ' + port);
+// call the packages we need
+var express    = require('express');        // call express
+var app        = express();                 // define our app using express
+var bodyParser = require('body-parser');
 
-// mongoose.connect(config.database); // connect to database
-app.set('superSecret', config.secret); // secret variable
-
-// use body parser so we can get info from POST and/or URL parameters
-app.use(bodyParser.urlencoded({ extended: false }));
+// configure app to use bodyParser()
+// this will let us get the data from a POST
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// use morgan to log requests to the console
-app.use(morgan('dev'));
+var port = process.env.PORT || 8080;        // set our port
 
-// =======================
-// routes ================
-// =======================
-// basic route
-app.get('/', function(req, res) {
-    res.send('Hello! The API is at http://localhost:' + port + '/api');
+// ROUTES FOR OUR API
+var router = express.Router();              // get an instance of the express Router
+
+
+// middleware that is specific to this router
+router.use(function timeLog (req, res, next) {
+    console.log('Time: ', Date.now());
+    next();
 });
 
-// API ROUTES -------------------
-// we'll get to these in a second
+// test route to make sure everything is working (accessed at GET http://localhost:8080/api)
+router.get('/', function(req, res) {
+    res.json({ message: 'hooray! welcome to our api!' });
+});
 
-// =======================
-// start the server ======
-// =======================
+// more routes for our API will happen here
+router.route('/airliner')
+// create a bear (accessed at POST http://localhost:8080/bears)
+    .post(function(req, res) {
+
+        var airliner = new Airliner();
+        airliner.name = req.body.name;
+
+        airliner.save(function(err) {
+            if (err)
+                res.send(err);
+
+            res.json({ message: 'Airliner created!' });
+        });
+
+
+    })
+
+    .get(function(req, res) {
+        Airliner.find(function(err, airliner) {
+            if (err)
+                res.send(err);
+
+            res.json(airliner);
+        });
+    });
+
+
+
+// REGISTER OUR ROUTES -------------------------------
+// all of our routes will be prefixed with /api
+app.use('/api', router);
+
+// START THE SERVER
 app.listen(port);
-console.log('Magic happens at http://localhost:' + port);
+console.log('Magic happens on port ' + port);
