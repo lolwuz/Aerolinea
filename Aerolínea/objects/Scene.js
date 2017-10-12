@@ -28,6 +28,7 @@ class Scene extends THREE.Scene {
         this.add(this.world);
 
         // this.add(new Plane());
+
         this.addLight();
     }
 
