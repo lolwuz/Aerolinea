@@ -2,38 +2,27 @@ class Airport extends THREE.Object3D{
     constructor(position) {
         super();
         
-        this.rotationPosition = position
-        
-        this.pivot = new THREE.Object3D();
+        this.rPosition = position;
      
-        let Geometry = new THREE.SphereGeometry(0.01, 128, 128);
+        let Geometry = new THREE.SphereGeometry(0.01, 8, 8);
         let Material = new THREE.MeshStandardMaterial({
             color: 0xFF00FF
         });
-        let Mesh = new THREE.Mesh(Geometry,Material);
-        Mesh.position.x = 1;
-        this.pivot.add(Mesh);
-        this.add(this.pivot);
-
-        this.applyRotation(this.toRad(this.rotationPosition.x), this.toRad(this.rotationPosition.y))
+        this.Mesh = new THREE.Mesh(Geometry,Material);
+        this.add(this.Mesh);
+        
+        this.position.add(this.getPositionOnSphere(this.rPosition.x, this.rPosition.y, 1));
     }
     
-    applyRotation(stepZ, stepY)
+    getPositionOnSphere(long, lat, radius)
     {
-        // Update ball rotation
-        let tempMat = new THREE.Matrix4();
-        tempMat.makeRotationAxis(new THREE.Vector3(0, 0, 1), stepZ);
-        tempMat.multiply(this.matrix);
-        this.matrix = tempMat;
-        tempMat = new THREE.Matrix4();
-        tempMat.makeRotationAxis(new THREE.Vector3(0, 1, 0), stepY);
-        tempMat.multiply(this.matrix);
-        this.matrix = tempMat;
-        this.rotation.setFromRotationMatrix(this.matrix);
-    }
-    
-    toRad(degrees)
-    {
-        return degrees*Math.PI/180;
+        let position = new THREE.Vector3();
+        position.y = Math.sin(long) * radius;
+        let hypXZ = Math.cos(long);
+        
+        position.z = Math.sin(-lat) * hypXZ * radius;
+        position.x = Math.cos(lat) * hypXZ * radius;
+        
+        return position;
     }
 }
