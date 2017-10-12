@@ -16,7 +16,7 @@ class Scene extends THREE.Scene {
         // Add orbit controlls to the scene.
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
         this.controls.maxDistance = 10;
-        this.controls.minDistance = 1.4;
+        this.controls.minDistance = 1.6;
         this.controls.enablePan = false;
         this.controls.enableRotate = true;
         this.controls.enableDamping = true;
@@ -44,11 +44,9 @@ class Scene extends THREE.Scene {
         this.add(this.sunPivot);
     }
 
-    update() {
+    update(delta) {
         this.renderer.render(this, this.camera);
         this.controls.update();
-        
-        console.log(this.controls.getRefDistance);
         // Update lighting
         this.sunPivot.rotation.y += 0.001;
         // Update world
