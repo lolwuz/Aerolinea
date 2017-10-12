@@ -16,32 +16,41 @@ class Scene extends THREE.Scene {
         // Add orbit controlls to the scene.
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
         this.controls.maxDistance = 10;
-        this.controls.minDistance = 1.3;
+        this.controls.minDistance = 1.4;
         this.controls.enablePan = false;
         this.controls.enableRotate = true;
+        this.controls.enableDamping = true;
+        this.controls.autoRotate = true;
+        this.controls.autoRotateSpeed = 0.01;
         this.controls.update();
 
         this.world = new World();
         this.add(this.world);
 
         // this.add(new Plane());
-
         this.addLight();
     }
 
     addLight() {
-        let ambient = new THREE.AmbientLight(0xFFFFFF, 0.2);
-        let sun = new THREE.DirectionalLight(0xFFFFFF, 0.6);
-
-        this.add(ambient);
-        this.add(sun);
+        this.ambient = new THREE.AmbientLight(0xFFFFFF, 0.2);
+        this.add(this.ambient);
+        
+        this.sunPivot = new THREE.Object3D();
+        this.sun = new THREE.SpotLight(0xFFFFFF, 1);
+        this.sun.lookAt(this.world); 
+        this.sun.position.set(0,0,10);
+        this.sunPivot.add(this.sun);
+        
+        this.add(this.sunPivot);
     }
 
     update() {
         this.renderer.render(this, this.camera);
+        this.controls.update();
         
+        console.log(this.controls.getRefDistance);
         // Update lighting
-    
+        this.sunPivot.rotation.y += 0.001;
         // Update world
         this.world.update();
     }
