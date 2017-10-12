@@ -6,7 +6,7 @@ class Airport extends THREE.Object3D{
         
         this.pivot = new THREE.Object3D();
      
-        let Geometry = new THREE.SphereGeometry(0.01, 128, 128);
+        let Geometry = new THREE.SphereGeometry(0.01, 8, 8);
         let Material = new THREE.MeshStandardMaterial({
             color: 0xFF00FF
         });
