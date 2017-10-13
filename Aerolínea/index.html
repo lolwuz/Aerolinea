@@ -56,19 +56,12 @@
             raycaster.setFromCamera( mouse.clone(), scene.camera );
 
             // calculate objects intersecting the picking ray
-            console.log(scene.children[0].children);
             let intersects = raycaster.intersectObjects( scene.children[0].children );
 
             for ( let i = 0; i < intersects.length; i++ ) {
-                if(intersects[i].) {
-                    console.log("Intersect: " + intersects[i].info.name);
-                }
+                console.log(intersects[i].object);
             }
-
-
         }
-
-
     </script>
 </body>
 
