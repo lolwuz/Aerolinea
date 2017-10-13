@@ -17,6 +17,8 @@
     <script src="objects/Plane.js"></script>
     <script>
         var scene;
+        var raycaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2();
 
         init();
         animate();
@@ -24,6 +26,7 @@
         function init() {
             scene = new Scene();
             window.addEventListener('resize', onWindowResize, false);
+            window.addEventListener( 'click', onMouseClick, false );
         }
 
         function animate() {
@@ -40,6 +43,30 @@
             scene.renderer.setSize(window.innerWidth, window.innerHeight);
 
         }
+
+        function onMouseClick( event ) {
+            // calculate mouse position in normalized device coordinates
+            // (-1 to +1) for both components
+            console.log("Clicked");
+            mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+            // update the picking ray with the camera and mouse position
+            raycaster.setFromCamera( mouse.clone(), scene.camera );
+
+            // calculate objects intersecting the picking ray
+            console.log(scene.children[0].children);
+            let intersects = raycaster.intersectObjects( scene.children[0].children );
+
+            for ( let i = 0; i < intersects.length; i++ ) {
+                if(intersects[i].) {
+                    console.log("Intersect: " + intersects[i].info.name);
+                }
+            }
+
+
+        }
+
 
     </script>
 </body>
