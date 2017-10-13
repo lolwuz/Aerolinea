@@ -1,13 +1,15 @@
 class Airport extends THREE.Mesh{
     constructor(obj) {
-        let Geometry = new THREE.BoxGeometry(0.002, 0.002, 0.002);
+        let Geometry = new THREE.BoxGeometry(0.004, 0.004, 0.004);
         let Material = new THREE.MeshBasicMaterial({
             color: 0xFF00FF
         });
 
         super(Geometry, Material);
         this.info = obj;
-        this.position.add(this.getPositionOnSphere(obj.lat * Math.PI / 180, obj.lon * Math.PI / 180, 1));
+        let position = this.getPositionOnSphere(obj.lat * Math.PI / 180, obj.lon * Math.PI / 180, 1);
+        this.position.set(position.x, position.y, position.z);
+        this.lookAt(position.multiplyScalar(2));
     }
     
     getPositionOnSphere(long, lat, radius)
@@ -18,8 +20,6 @@ class Airport extends THREE.Mesh{
         
         position.z = Math.sin(-lat) * hypXZ * radius;
         position.x = Math.cos(lat) * hypXZ * radius;
-
-
 
         return position;
     }
