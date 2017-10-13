@@ -4,28 +4,42 @@ class Airplane extends THREE.Object3D {
 
         let tempClass = this;
 
-        let texture = new THREE.Texture();
+        let mtlLoader = new THREE.MTLLoader();
+        mtlLoader.setPath('src/');
+        mtlLoader.load('Airbus A310.mtl', function(materials) {
+            materials.preload();
 
-        let imageLoader = new THREE.ImageLoader();
-        imageLoader.load('src/galaxy.jpg', function (image) {
-            texture.image = image;
-            texture.needsUpdate = true;
-        });
+            console.log(materials);
 
+            let objLoader = new THREE.OBJLoader();
+            objLoader.setMaterials(materials);
+            objLoader.setPath('src/');
+            objLoader.load('Airbus A310.obj', function(object) {
 
-        // OBJLoader:
-        let loader = new THREE.OBJLoader();
-        loader.load('src/galaxy.obj', function (object) {
-            object.traverse(function (child) {
-                if (child instanceof THREE.Mesh) {
-                    child.material.map = texture;
-                }
+                object.scale.set(0.05, 0.05, 0.05);
+                object.position.set(1.5, 1.5, 1.5);
+
+                tempClass.add(object);
             });
 
-            object.scale.set(0.05, 0.05, 0.05);
-            object.position.set(1.5, 1.5, 1.5);
-            tempClass.add(object);
         });
+
+        // OBJLoader:
+        // let loader = new THREE.OBJLoader();
+        // loader.load('src/Airbus A310.obj', function (object) {
+        //     object.traverse(function (child) {
+        //         if (child instanceof THREE.Mesh) {
+        //             child.material.map = texture;
+        //         }
+        //     });
+        //
+        //     object.scale.set(0.05, 0.05, 0.05);
+        //     object.position.set(1.5, 1.5, 1.5);
+        //
+        //     // console.log(object);
+        //
+        //     tempClass.add(object);
+        // });
 
         // ColladaLoader:
         // let loader = new THREE.ColladaLoader();
