@@ -3,6 +3,8 @@ class Scene extends THREE.Scene {
         super();
         // Add camera to the scene.
         this.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 10);
+        this.camera.position.x = 3;
+        this.camera.position.y = 0.5;
         this.renderer = new THREE.WebGLRenderer(
             {
                 antialias: true,
