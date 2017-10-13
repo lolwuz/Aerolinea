@@ -1,17 +1,13 @@
-class Airport extends THREE.Object3D{
-    constructor(position) {
-        super();
-        
-        this.rPosition = position;
-     
-        let Geometry = new THREE.SphereGeometry(0.01, 32, 32);
-        let Material = new THREE.MeshStandardMaterial({
+class Airport extends THREE.Mesh{
+    constructor(obj) {
+        let Geometry = new THREE.BoxGeometry(0.002, 0.002, 0.002);
+        let Material = new THREE.MeshBasicMaterial({
             color: 0xFF00FF
         });
-        this.Mesh = new THREE.Mesh(Geometry,Material);
-        this.add(this.Mesh);
-        
-        this.position.add(this.getPositionOnSphere(this.rPosition.x, this.rPosition.y, 1));
+
+        super(Geometry, Material);
+        this.info = obj;
+        this.position.add(this.getPositionOnSphere(obj.lat * Math.PI / 180, obj.lon * Math.PI / 180, 1));
     }
     
     getPositionOnSphere(long, lat, radius)
@@ -22,7 +18,18 @@ class Airport extends THREE.Object3D{
         
         position.z = Math.sin(-lat) * hypXZ * radius;
         position.x = Math.cos(lat) * hypXZ * radius;
-        
+
+
+
         return position;
     }
 }
+
+//
+// "iata": "FIV",
+//     "iso": "US",
+//     "status": 1,
+//     "name": "Five Finger CG Heliport",
+//     "continent": "NA",
+//     "type": "heliport",
+//     "size": null

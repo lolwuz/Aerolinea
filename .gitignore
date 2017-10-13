@@ -1,3 +1,5 @@
-
+# Jetbrains config
 .idea/
-.DS_STORE
+
+# Apple Mac OS icon config
+.DS_Store
