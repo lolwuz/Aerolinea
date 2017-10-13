@@ -2,11 +2,9 @@ class World extends THREE.Object3D {
     constructor() {
         super();
         let earthGeometry = new THREE.SphereGeometry(1, 64, 64);
-        let cloudGeometry = new THREE.SphereGeometry(1.02, 64, 64);
 
         let earthTexture = new THREE.TextureLoader().load("./src/textures/rgb.jpg");
         let earthTextureE = new THREE.TextureLoader().load("./src/textures/elevate.jpg");
-        let earthTextureC = new THREE.TextureLoader().load("./src/textures/cloud8.png");
 
         // let earthBump = new THREE.TextureLoader().load("./src/textures/EarthBump2.jpg");
         // let earthRough = new THREE.TextureLoader().load("./src/textures/EarthSpec.jpg");
@@ -19,31 +17,21 @@ class World extends THREE.Object3D {
             color: 0xFFFFFF
         });
 
-        var cloudMaterial = new THREE.MeshPhongMaterial({
-            map: earthTextureC,
-            transparent: true,
-            bumpScale: 0.1,
-            side: THREE.DoubleSide
-        });
-
         this.earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
-        this.cloudMesh = new THREE.Mesh(cloudGeometry, cloudMaterial);
         this.add(this.earthMesh);
         // this.add(this.cloudMesh);
         // this.createAirports();
 
         let airports = this.getAirports();
-        
         for (let i = 0; i < airports.length; i++) {
             if(airports[i].size === "large"){
-                console.log("New Airport: " + airports[i].name); 
-                this.add(new Airport(new THREE.Vector2(parseFloat(airports[i].lon)*Math.PI/180, parseFloat(airports[i].lat)*Math.PI/180)));
+                console.log("New Airport: " + airports[i].continent);
+                this.add(new Airport(airports[i]));
             }
         }
     }
 
     update() {
-        this.cloudMesh.rotation.y -= 0.0001;
     }
 
     getAirports() {

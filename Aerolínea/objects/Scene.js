@@ -19,7 +19,6 @@ class Scene extends THREE.Scene {
         this.controls.minDistance = 1.6;
         this.controls.enablePan = false;
         this.controls.enableRotate = true;
-        this.controls.enableDamping = true;
         this.controls.autoRotate = true;
         this.controls.autoRotateSpeed = 0.01;
         this.controls.update();
@@ -46,12 +45,12 @@ class Scene extends THREE.Scene {
     }
 
     update() {
-        this.renderer.render(this, this.camera);
-        this.controls.update();
-
         // Update lighting
         this.sunPivot.rotation.y += 0.001;
         // Update world
         this.world.update();
+
+        this.renderer.render(this, this.camera);
+
     }
 }
