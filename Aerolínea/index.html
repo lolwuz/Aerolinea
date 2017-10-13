@@ -11,6 +11,8 @@
     <canvas id="gameCanvas"></canvas>
     <script src="javascript/three.js"></script>
     <script src="javascript/controls/OrbitControls.js"></script>
+    <script src="javascript/OBJLoader.js"></script>
+    <script src="javascript/OBJLoader2.js"></script>
     <script src="javascript/ColladaLoader2.js"></script>
     <script src="objects/Scene.js"></script>
     <script src="objects/World.js"></script>
@@ -59,11 +61,11 @@
             console.log(scene.children[0].children);
             let intersects = raycaster.intersectObjects( scene.children[0].children );
 
-            for ( let i = 0; i < intersects.length; i++ ) {
-                if(intersects[i].) {
-                    console.log("Intersect: " + intersects[i].info.name);
-                }
-            }
+//            for ( let i = 0; i < intersects.length; i++ ) {
+//                if(intersects[i].) {
+//                    console.log("Intersect: " + intersects[i].info.name);
+//                }
+//            }
 
 
         }
