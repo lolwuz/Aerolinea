@@ -8,7 +8,7 @@ class RouteLine extends THREE.Object3D{
         this.startAirport = startAirport;
         this.destinationAirport = destinationAirport;
         
-        let lineGeometry = this.makeConnectionLineGeometry(this.startAirport, this.destinationAirport, 1, 1.05, 4);
+        let lineGeometry = this.makeConnectionLineGeometry(this.startAirport, this.destinationAirport, 1, 1.05, 5);
         let material = new THREE.MeshStandardMaterial({ emissive: colour });
         this.line = new THREE.Line(lineGeometry, material);
         
@@ -30,7 +30,20 @@ class RouteLine extends THREE.Object3D{
         //points.push(endPos);
         points.push(destination.position);
         
+        let curvePoints = [];
+        for (let i = 0; i < 3; i++)
+        {
+            curvePoints.push(points[i]);
+        }
+        points = new THREE.CatmullRomCurve3(curvePoints).getPoints(20).concat(points);
+
+        curvePoints = [];
+        for (let i = points.length-3; i < points.length; i++)
+        {
+            curvePoints.push(points[i]);
+        }
         
+        points = new THREE.CatmullRomCurve3(curvePoints).getPoints(20).concat(points);
         
         
           //create a line geometry
@@ -39,9 +52,10 @@ class RouteLine extends THREE.Object3D{
         {
             geometry.vertices.push(points[i]);
         }
-//        let curve = new THREE.CatmullRomCurve3(points);
-//        var path = new THREE.Path( curve.getPoints( 50 ) );
-//        var geometry = path.createPointsGeometry( 50 );
+        
+//        var curve = new THREE.CatmullRomCurve3(x);
+//        var geometry = new THREE.Geometry();
+//        geometry.vertices = curve.getPoints(20);
         
         return geometry;
     }
@@ -68,6 +82,7 @@ class RouteLine extends THREE.Object3D{
         
 
     }
+}
 
 class axisHelper extends THREE.Object3D{
     constructor(length) {
