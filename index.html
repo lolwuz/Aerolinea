@@ -34,16 +34,20 @@
     <script src="javascript/three.js"></script>
     <script src="javascript/controls/OrbitControls.js"></script>
     <script src="javascript/OBJLoader.js"></script>
-    <script src="objects/RouteLine.js"></script>
     <script src="objects/Scene.js"></script>
     <script src="objects/World.js"></script>
     <script src="objects/Airport.js"></script>
     <script src="objects/Airplane.js"></script>
+    <script src="objects/Route.js"></script>
+    <script src="objects/RouteLine.js"></script>
     <script src="objects/Clouds.js"></script>
     <script>
         var scene;
         var raycaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2();
+        
+        var clock = new THREE.Clock();
+        var delta;
 
         init();
         animate();
@@ -62,6 +66,8 @@
         }
 
         function animate() {
+            
+            delta = clock.getDelta();
 
             requestAnimationFrame(animate);
             scene.update();

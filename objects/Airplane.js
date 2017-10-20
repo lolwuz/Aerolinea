@@ -3,7 +3,6 @@ class Airplane extends THREE.Object3D {
         super();
         
         this.speed = speed;
-        this.percentInFlight = 0.0;
         
         let tempClass = this;
         
@@ -23,25 +22,5 @@ class Airplane extends THREE.Object3D {
 
                 tempClass.add(object);
             });
-        this.add(new axisHelper(1));
-    }
-    
-    setNextPosition(routeLine, delta)
-    {
-            //save its old flightPos
-        let percentInFlight_old = this.percentInFlight;
-        
-            //Set new position (in % along its path)
-        this.percentInFlight += routeLine.length/this.speed * delta;      // percentInFlight == > 0 && < 1
-        
-        if (this.percentInFlight <= 1)
-        {
-                //Get the new position of the Airplane (in 3D space)
-            let newPos = routeLine.spline.getPoint(this.percentInFlight);  
-                //Set its position and rotation (facing away from its old position)
-            this.position.set(newPos.x, newPos.y, newPos.z);
-            this.up = newPos.multiplyScalar(2);
-            this.lookAt(routeLine.spline.getPoint(percentInFlight_old));  
-        }
     }
 }
