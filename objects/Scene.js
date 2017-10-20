@@ -28,36 +28,39 @@ class Scene extends THREE.Scene {
         this.world = new World();
         this.add(this.world);
 
-        // this.add(new Plane());
-
         this.addLight();
         this.add(new axisHelper(5));
         
-        this.airplane = new Airplane(0.05, 3, 1000000);
-        this.add(this.airplane);
+            this.airplane = new Airplane(0.05, 3, 0.1);
+//            this.add(this.airplane);
+
+            let Geometry = new THREE.BoxGeometry(0.05, 0.05, 0.05);
+            let Material = new THREE.MeshBasicMaterial({ color: 0xFF00FF });
         
-        let Geometry = new THREE.BoxGeometry(0.05, 0.05, 0.05);
-        let Material = new THREE.MeshBasicMaterial({ color: 0xFF00FF });
-        this.airport1 = new THREE.Mesh(Geometry, Material);
-        this.airport1.position.y = Math.sin(10*Math.PI/180);
-        let hypXZ = Math.cos(10*Math.PI/180);
-        this.airport1.position.z = Math.sin(-22*Math.PI/180) * hypXZ;
-        this.airport1.position.x = Math.cos(22*Math.PI/180) * hypXZ;
+            this.airport1 = new THREE.Mesh(Geometry, Material);
+            this.airport1.position.y = Math.sin(10*Math.PI/180);
+            let hypXZ = Math.cos(10*Math.PI/180);
+            this.airport1.position.z = Math.sin(-22*Math.PI/180) * hypXZ;
+            this.airport1.position.x = Math.cos(22*Math.PI/180) * hypXZ;
+
+            this.airport2 = new THREE.Mesh(Geometry, Material);
+            this.airport2.position.y = Math.sin(-30*Math.PI/180);
+            hypXZ = Math.cos(-30*Math.PI/180);
+            this.airport2.position.z = Math.sin(-130*Math.PI/180) * hypXZ;
+            this.airport2.position.x = Math.cos(130*Math.PI/180) * hypXZ;
         
-        this.airport2 = new THREE.Mesh(Geometry, Material);
-        this.airport2.position.y = Math.sin(-30*Math.PI/180);
-        hypXZ = Math.cos(-30*Math.PI/180);
-        this.airport2.position.z = Math.sin(-130*Math.PI/180) * hypXZ;
-        this.airport2.position.x = Math.cos(130*Math.PI/180) * hypXZ;
+            this.airport3 = new THREE.Mesh(Geometry, Material);
+            this.airport3.position.y = Math.sin(40*Math.PI/180);
+            hypXZ = Math.cos(-40*Math.PI/180);
+            this.airport3.position.z = Math.sin(-160*Math.PI/180) * hypXZ;
+            this.airport3.position.x = Math.cos(160*Math.PI/180) * hypXZ;
         
-        this.routeLine = new RouteLine(this.airport1, this.airport2, 0xFFFF00);
-        this.add(this.routeLine);
+        this.route = new Route([this.airport1, this.airport2, this.airport3], this.airplane);
+        this.add(this.route);
+        console.log(this.route);
         
-//        this.airplane.position.set(0, 1.3, 0);
-//        let lookAtPosition = new THREE.Vector3().copy(this.airplane.position).multiplyScalar(0.5);
-//        lookAtPosition.x = 1;
-//        lookAtPosition.z = 1;
-//        this.airplane.lookAt(lookAtPosition);
+//        this.routeLine = new RouteLine(this.airport1, this.airport2, 0xFFFF00);
+//        this.add(this.routeLine);
     }
 
     addLight() {
