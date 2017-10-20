@@ -5,7 +5,7 @@ class RouteLine extends THREE.Line{
         this.startAirport = startAirport;
         this.destinationAirport = destinationAirport;
         
-        let flightLine = this.getFlightLine(this.startAirport, this.destinationAirport, 1, 0.05, 5);
+        let flightLine = this.getFlightLine(this.startAirport, this.destinationAirport, 1, 0.05, 4);
         let smoothFlightLine = this.smoothFlightLine(flightLine, true, true);
         
         this.geometry = this.createGeometry(smoothFlightLine);
