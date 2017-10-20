@@ -8,13 +8,8 @@
 .vscode/
 
 # Node modules
-/node_modules
-
-# testing
-/coverage
-
-# production
-/build
+node_modules/
+coverage/
 
 # Misc
 .env.local
