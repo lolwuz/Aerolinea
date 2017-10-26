@@ -1,11 +1,11 @@
 class RouteLine extends THREE.Line{
-    constructor(startAirport, destinationAirport, colour) {
+    constructor(startAirport, destinationAirport, travelHeight, colour) {
         super();
         
         this.startAirport = startAirport;
         this.destinationAirport = destinationAirport;
         
-        let flightLine = this.getFlightLine(this.startAirport, this.destinationAirport, 1, 0.05, 4);
+        let flightLine = this.getFlightLine(this.startAirport, this.destinationAirport, travelHeight, 4);
         let smoothFlightLine = this.smoothFlightLine(flightLine, true, true);
         
         this.geometry = this.createGeometry(smoothFlightLine);
@@ -19,24 +19,23 @@ class RouteLine extends THREE.Line{
         }
     }
     
-    getFlightLine(start, destination, sphereRadius, travelHeight, count)
+    getFlightLine(start, destination, travelHeight, count)
     {
-        let totalHeight = sphereRadius + travelHeight;
         
             //Get the startPosition and endPosition of the curve at travelheight (These points won't be included into the points array)
-        let startPos = start.position.clone().multiplyScalar(travelHeight).lerp(destination.position.clone().multiplyScalar(travelHeight),0).normalize().multiplyScalar(totalHeight);
-        let endPos = start.position.clone().multiplyScalar(travelHeight).lerp(destination.position.clone().multiplyScalar(travelHeight),1).normalize().multiplyScalar(totalHeight);
+        let startPos = start.position.clone().multiplyScalar(travelHeight).lerp(destination.position.clone().multiplyScalar(travelHeight),0).normalize().multiplyScalar(travelHeight);
+        let endPos = start.position.clone().multiplyScalar(travelHeight).lerp(destination.position.clone().multiplyScalar(travelHeight),1).normalize().multiplyScalar(travelHeight);
         
             //Create the point array of the curve at travelheight and its start and end position
         let points = [];
         points.push(start.position);
-        points = points.concat(this.getPoints(startPos, endPos, totalHeight, count));
+        points = points.concat(this.getPoints(startPos, endPos, travelHeight, count));
         points.push(destination.position);
         
         return points;
     }
     
-    getPoints(point_1, point_2, totalHeight, count)
+    getPoints(point_1, point_2, travelHeight, count)
     {
             //Amount of total vertices = 2^count
         
@@ -46,11 +45,11 @@ class RouteLine extends THREE.Line{
         {
             let points = [];
         
-            let midPos = point_1.clone().lerp(point_2,0.5).normalize().multiplyScalar(totalHeight);
+            let midPos = point_1.clone().lerp(point_2,0.5).normalize().multiplyScalar(travelHeight);
 
-            points = points.concat(this.getPoints(point_1, midPos, totalHeight, count-1));
+            points = points.concat(this.getPoints(point_1, midPos, travelHeight, count-1));
             points.push(midPos);
-            points = points.concat(this.getPoints(midPos, point_2, totalHeight, count-1));
+            points = points.concat(this.getPoints(midPos, point_2, travelHeight, count-1));
 
             return points;
         }
