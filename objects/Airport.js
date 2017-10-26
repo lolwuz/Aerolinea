@@ -25,11 +25,3 @@ class Airport extends THREE.Mesh{
     }
 }
 
-//
-// "iata": "FIV",
-//     "iso": "US",
-//     "status": 1,
-//     "name": "Five Finger CG Heliport",
-//     "continent": "NA",
-//     "type": "heliport",
-//     "size": null

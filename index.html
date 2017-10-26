@@ -46,8 +46,7 @@
         var raycaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2();
         
-        var clock = new THREE.Clock();
-        var delta;
+        const clock = new THREE.Clock();
 
         init();
         animate();
@@ -67,10 +66,10 @@
 
         function animate() {
             
-            delta = clock.getDelta();
+            let delta = clock.getDelta();
 
             requestAnimationFrame(animate);
-            scene.update();
+            scene.update(delta);
 
         }
 
@@ -85,7 +84,6 @@
         function onMouseClick( event ) {
             // calculate mouse position in normalized device coordinates
             // (-1 to +1) for both components
-            console.log("Clicked");
             mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
             mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
@@ -94,9 +92,9 @@
 
             // calculate objects intersecting the picking ray
             let intersects = raycaster.intersectObjects( scene.children[0].children );
-
+            
             for ( let i = 0; i < intersects.length; i++ ) {
-                console.log(intersects[i].object);
+                console.log(intersects[i]);
                 if(intersects[i].object.constructor.name === "Airport"){
                     console.log(intersects[i].object.info.name);
                     document.getElementById("Airport").innerText = intersects[i].object.info.name;
