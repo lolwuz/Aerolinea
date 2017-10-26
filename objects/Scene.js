@@ -31,9 +31,11 @@ class Scene extends THREE.Scene {
         this.addLight();
         this.add(new axisHelper(5));
         
-        this.airplane = new Airplane(0.05, 3, 0.1);
+        this.airplane = new Airplane(0.05, 3, 1000000);
+        this.add(this.airplane);
 
-
+        this.add(new Clouds());
+        
         let Geometry = new THREE.BoxGeometry(0.05, 0.05, 0.05);
         let Material = new THREE.MeshBasicMaterial({ color: 0xFF00FF });
     
