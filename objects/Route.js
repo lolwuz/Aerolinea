@@ -28,7 +28,7 @@ class Route extends THREE.Object3D {
             this.add(this.routeLines[i]);
     }
     
-    setAirplaneNextPosition()
+    setAirplaneNextPosition(delta)
     {
         if (this.onAirportTimer >= 0)
             this.onAirportTimer -= delta;

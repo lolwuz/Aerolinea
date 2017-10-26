@@ -20,23 +20,49 @@ class World extends THREE.Object3D {
         this.earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
         this.add(this.earthMesh);
         // this.add(this.cloudMesh);
-        // this.createAirports();
+        
+        this.airportArray = [];
+        this.routeArray = [];
 
-        let airports = this.getAirports("http://192.168.178.41:3000/airport");
-        for (let i = 0; i < airports.length; i++) {
-            this.add(new Airport(airports[i]));
+        this.getAirportsFromAPI();
+    }
+
+    update(delta) {
+        for(let i = 0; i < this.routeArray.length; i++){
+            this.routeArray[i].setAirplaneNextPosition(delta);
         }
     }
 
-    update() {
+    async getAirportsFromAPI(){
+        const response = await fetch("http://server.lolwuz.com:3000/airport");
+        const responseJson = await response.json();
 
+        for(let i = 0; i < responseJson.length; i++){
+            let new_airport = new Airport(responseJson[i]);
+            this.add(new_airport);
+            this.airportArray.push(new_airport);
+        }
+        this.getRoutesFromAPI();
     }
 
-    getAirports(fetchUrl) {
-        return fetch(fetchUrl)
-            .then((resp) => resp.json()) // Transform the data into json
-            .then(function(data) {
-                return data;
-            })
+    async getRoutesFromAPI(){
+        const id = "59e9f093a8c44e1774b155a5";
+        const response = await fetch("http://server.lolwuz.com:3000/airliner/" + id + "/route");
+        const responseJson = await response.json();
+        console.log(responseJson);
+        for(let i = 0; i < responseJson.length; i++){
+            let airports = [];
+            for(let ii = 0; ii < responseJson[i].destinations.length; ii++){
+                for(let iii = 0; iii < this.airportArray.length; iii++){
+                    console.log(this.airportArray[iii]._id);
+                    if(responseJson[i].destinations[ii] === this.airportArray[iii].info._id){
+                        airports.push(this.airportArray[iii]);
+                    }
+                }
+            }
+            let new_route = new Route(airports, new Airplane(0.05, 1, 0.1));
+            this.routeArray.push(new_route);
+            this.add(new_route); 
+        }
     }
 }
