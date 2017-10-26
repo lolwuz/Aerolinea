@@ -19,7 +19,7 @@ class Route extends THREE.Object3D {
             this.add(this.routeLines[i]);
     }
     
-    setAirplaneNextPosition()
+    setAirplaneNextPosition(delta)
     {
         this.onLine = Math.floor(this.percentInFlight * this.routeLines.length);
         let routeLine = this.routeLines[this.onLine];
