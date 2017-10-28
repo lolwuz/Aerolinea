@@ -17,8 +17,8 @@ class Scene extends THREE.Scene {
 
         // Add orbit controlls to the scene.
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-        //this.controls.maxDistance = 10;
-        //this.controls.minDistance = 1.6;
+        this.controls.maxDistance = 10;
+        this.controls.minDistance = 1.6;
         //this.controls.enablePan = false;
         this.controls.enableRotate = true;
         this.controls.autoRotate = true;

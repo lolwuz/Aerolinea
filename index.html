@@ -17,17 +17,23 @@
 </head>
 
 <body>
-
-    <div style="position: absolute;">
-        <div class="card" style="width: 20rem; opacity: 0.8;">
-            <img id="AirportImg" class="card-img-top" src="..." alt="Card image cap">
-            <div class="card-body">
-                <h4 id="Airport">Airport Name</h4>
-                <p id="AirportInfo" class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                <a href="#" class="btn btn-primary">Buy landing rights</a>
-            </div>
+    <div id="infoCard" class="card">
+        <img id="AirportImg" class="card-img-top" src="..." alt="Card image cap">
+        <div class="card-body">
+            <h4 id="Airport">Airport Name</h4>
+            <p id="AirportInfo" class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="#" class="btn btn-primary">Buy landing rights</a>
         </div>
     </div>
+
+    <div id="routeCard" class="card">
+        <ul id="routeList" class="list-group list-group-flush">
+        </ul>
+        <div class="card-body">
+            <a id="newRouteButton" href="#" class="btn btn-primary" onclick="newroute()">New route</a>
+        </div>
+    </div>
+ 
 
     <canvas id="gameCanvas"></canvas>
 
@@ -42,11 +48,16 @@
     <script src="objects/RouteLine.js"></script>
     <script src="objects/Clouds.js"></script>
     <script>
+
         var scene;
         var raycaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2();
-        
         const clock = new THREE.Clock();
+
+        var isNewRoute = false;
+        var newRoute = []; 
+
+        
 
         init();
         animate();
@@ -58,7 +69,6 @@
 
             for (let i=0; i< scene.children[0].children.length; i++) {
                 if(scene.children[0].children[i].constructor.name === "Airport"){
-                    console.log(scene.children[0].children[i].info.name);
                     // document.getElementById("AirportList").innerHTML += "<a href=\"#\" class=\"list-group-item list-group-item-action\">" + scene.children[0].children[i].info.name + "</a>";
                 }
             }
@@ -94,8 +104,15 @@
             let intersects = raycaster.intersectObjects( scene.children[0].children );
             
             for ( let i = 0; i < intersects.length; i++ ) {
-                console.log(intersects[i]);
                 if(intersects[i].object.constructor.name === "Airport"){
+                    if(isNewRoute){
+                        newRoute.push(intersects[i].object.info._id);
+                        document.getElementById("routeList").innerHTML = "";
+
+                        for(let i = 0; i < newRoute.length; i++){
+                            document.getElementById("routeList").innerHTML += "<li class='list-group-item'>" + newRoute[i] + "</li>"
+                        }
+                    }
                     console.log(intersects[i].object.info.name);
                     document.getElementById("Airport").innerText = intersects[i].object.info.name;
                     document.getElementById("AirportInfo").innerText = intersects[i].object.info;
@@ -104,6 +121,70 @@
                 }
             }
         }
+
+        function newroute(){
+            isNewRoute = true;
+
+            document.getElementById("newRouteButton").innerText = "Add route";
+            document.getElementById("newRouteButton").onclick = addroute;
+            
+        }
+
+        async function addroute(){
+    
+            console.log("add route");
+            document.getElementById("newRouteButton").innerText = "New route";
+            document.getElementById("newRouteButton").onclick = newroute;
+
+            let destinations = new Object();
+
+            for(let i = 0; i < newRoute.length; i++){
+                destinations['destinations[' + i + ']'] = newRoute[i];
+            }
+
+            let formBody = [];
+            for (var property in destinations) {
+              var encodedKey = encodeURIComponent(property);
+              var encodedValue = encodeURIComponent(destinations[property]);
+              formBody.push(encodedKey + "=" + encodedValue);
+            }
+            formBody = formBody.join("&");
+
+            console.log(formBody);
+            console.log(getCookie("token"));
+        
+            let id = "59e9f093a8c44e1774b155a5";
+            let response = await fetch('http://server.lolwuz.com:3000/airliner/' + id + '/route', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Authorization": "JWT " + getCookie("token")
+                },
+                body: formBody
+            });
+            
+            let data = await response;
+            console.log(data);
+
+            isNewRoute = false;
+            newRoute = []; 
+        }
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+        }
+
     </script>
 </body>
 </html>

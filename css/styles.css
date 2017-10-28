@@ -8,3 +8,25 @@ canvas {
     display: block;
 }
 
+#infoCard{
+    position: absolute;
+
+    top: 1%;
+    left: 1%;
+
+    width: 25%; 
+    height: 45%;
+
+    opacity: 0.8;
+}
+
+#routeCard{
+    position: absolute;
+
+    top: 1%;
+    right: 1%;
+
+    width: 15%;
+
+    opacity: 0.8;
+}
