@@ -9,7 +9,7 @@ class Route extends THREE.Object3D {
         this.direction = 0;
         
         this.sphereRadius = 1;
-        this.travelHeight = 0.05 + this.sphereRadius;
+        this.travelHeight = 0.03;
         this.onAirportDefaultTime = 3;
         this.onAirportTimer = 3;
         
@@ -20,7 +20,7 @@ class Route extends THREE.Object3D {
         
             //Create a routeLine between airport 1 and 2, 2 and 3, etc.
         for (let i = 0; i < this.airports.length-1; i++)
-            this.routeLines.push(new RouteLine(airports[i], airports[i+1], this.travelHeight, this.colour));
+            this.routeLines.push(new RouteLine(airports[i], airports[i+1], this.sphereRadius, this.travelHeight, this.colour));
         
             //Add all child-object to the current object so that they will be visible in the scene
         this.add(this.airplane);
