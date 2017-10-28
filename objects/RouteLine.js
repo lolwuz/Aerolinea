@@ -10,7 +10,8 @@ class RouteLine extends THREE.Line{
         
         this.geometry = this.createGeometry(smoothFlightLine);
         this.material = new THREE.MeshStandardMaterial({ emissive: colour });
-        this.spline = new THREE.CatmullRomCurve3(flightLine);
+        this.spline = new THREE.CatmullRomCurve3(new THREE.CatmullRomCurve3(flightLine).getSpacedPoints(flightLine.length));
+        //this.spline = this.spline;
         
         this.length = 0;
         for (let i = 0; i < flightLine.length-1; i++)
