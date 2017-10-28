@@ -60,9 +60,12 @@ class World extends THREE.Object3D {
                     }
                 }
             }
-            let new_route = new Route(airports, new Airplane(0.05, 1, 0.1));
-            this.routeArray.push(new_route);
-            this.add(new_route); 
+
+            if(airports.length > 1){
+                let new_route = new Route(airports, new Airplane(0.05, 1, 0.1));
+                this.routeArray.push(new_route);
+                this.add(new_route); 
+            }
         }
     }
 }
