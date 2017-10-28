@@ -24,7 +24,7 @@ class RouteLine extends THREE.Line{
         let totalHeight = sphereRadius + travelHeight;
         let points = [];
         
-            //check if the distance between airports is big enough for the plane to reach its max travel height.
+            //Check if the distance between airports is big enough for the plane to reach its max travel height.
         if (start.position.distanceTo(destination.position) > travelHeight * 2)
         {
                 //Get the startPosition and endPosition of the curve at travelheight (These points won't be included into the points array)
@@ -35,6 +35,22 @@ class RouteLine extends THREE.Line{
             points.push(start.position);
             points = points.concat(this.getPoints(startPos, endPos, totalHeight, count));
             points.push(destination.position);
+            
+               //Remove the first and last points of the line at flight-height untill the distance from airport to the first point is at least the sqrt of 2*(travelHeight^2). This causes an angle of 45 degrees at max.
+            let distance = Math.sqrt(Math.pow(travelHeight, 2) * 2);
+            while (points.length >= 5 && points[0].distanceTo(points[1]) < distance)
+            {
+                points.splice(1, 1);
+                points.splice(points.length-2, 1);
+            }
+            
+            if (points.length >= 5)
+            {
+                    //Lower the first and last points (in the air) for a better curve
+                let newHeight = (travelHeight / 100) * 90 + sphereRadius;
+                points[1].normalize().multiplyScalar(newHeight);
+                points[points.length-2].normalize().multiplyScalar(newHeight);
+            }
         }
         else
         {
@@ -45,7 +61,6 @@ class RouteLine extends THREE.Line{
             points.push(destination.position);
             
         }
-        
         
         return points;
     }
@@ -72,37 +87,12 @@ class RouteLine extends THREE.Line{
     
     smoothFlightLine(points, sphereRadius, travelHeight, smoothBegin, smoothEnd)
     {
-            //This will remove the first and last points of the line at flight-height untill the distance from airport to the first point is at least the sqrt of 2*(travelHeight^2). This causes an angle of 45 degrees at max.
-        let distance = Math.sqrt(Math.pow(travelHeight, 2) * 2);
-        while (points.length >= 5 && points[0].distanceTo(points[1]) < distance)
-        {
-            points.splice(1, 1);
-            points.splice(points.length-2, 1);
-        }
-        
         if (points.length < 5)
-        {
-                //Get the points of the curved line
             points = new THREE.CatmullRomCurve3(points).getPoints(15);
-        }
-        else if (points.length == 5)
-        {
-                //Lower the first and last points (in the air) for a better curve
-            let newHeight = (travelHeight / 100) * 90 + sphereRadius;
-            points[1].normalize().multiplyScalar(newHeight);
-            points[points.length-2].normalize().multiplyScalar(newHeight);
-            
-                //Get the points of the curved line
+        else if (points.length == 5)       
             points = new THREE.CatmullRomCurve3(points).getPoints(25);
-        }
         else
         {
-                //Lower the first and last points (in the air) for a better curve
-            let newHeight = (travelHeight / 100) * 90 + sphereRadius;
-            points[1].normalize().multiplyScalar(newHeight);
-            points[points.length-2].normalize().multiplyScalar(newHeight);
-            
-            
                 //Get the begin and end curve-points
             if (smoothBegin)
             {
