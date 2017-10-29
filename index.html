@@ -121,7 +121,6 @@
                         else{
                             newRouteObjs[index].scale.set(1,1,1);
                             newRouteObjs[index].material.color.set(0xCC2828);
-                            console.log("xxxxxxxx");
                             
                             newRoute.splice(index, 1);
                             newRouteObjs.splice(index, 1);
@@ -141,7 +140,6 @@
                     if (selectedAirport !== undefined){
                         selectedAirport.scale.set(1,1,1);
                         selectedAirport.material.color.set(0xCC2828);
-                        console.log("yyyyyyyyyy");
                         if (isNewRoute)
                             selectedAirport = undefined;
                     }
@@ -193,6 +191,12 @@
 
         function newroute(){
             isNewRoute = true;
+            
+            if (selectedAirport !== undefined){
+                selectedAirport.scale.set(1,1,1);
+                selectedAirport.material.color.set(0xCC2828);
+                selectedAirport = undefined;
+            }
 
             document.getElementById("newRouteButton").innerText = "Add route";
             document.getElementById("newRouteButton").onclick = addroute;
@@ -209,6 +213,9 @@
 
             for(let i = 0; i < newRoute.length; i++){
                 destinations['destinations[' + i + ']'] = newRoute[i];
+                
+                newRouteObjs[i].scale.set(1,1,1);
+                newRouteObjs[i].material.color.set(0xCC2828);
             }
 
             let formBody = [];
