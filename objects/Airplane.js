@@ -6,11 +6,11 @@ class Airplane extends THREE.Object3D {
         
         let tempClass = this;
         
-        let textureName = 'models/Boeing787-8/texture' + textureNum + '.png'
+        let textureName = 'models/Boeing787-8_lp/textures/texture_' + textureNum + '.jpg'
         let texture = new THREE.TextureLoader().load(textureName);
         
         let objLoader = new THREE.OBJLoader();
-            objLoader.setPath('models/Boeing787-8/');
+            objLoader.setPath('models/Boeing787-8_lp/');
             objLoader.load('object.obj', function(object) {
                 object.traverse(function(child) {
                     if (child instanceof THREE.Mesh)
