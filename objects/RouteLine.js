@@ -33,9 +33,9 @@ class RouteLine extends THREE.Line{
             let endPos = start.position.clone().multiplyScalar(totalHeight).lerp(destination.position.clone().multiplyScalar(totalHeight),1).normalize().multiplyScalar(totalHeight);
 
                 //Create the point array of the curve at travelheight and its start and end position
-            points.push(start.position);
+            points.push(start.position.clone());
             points = points.concat(this.getPoints(startPos, endPos, totalHeight, count));
-            points.push(destination.position);
+            points.push(destination.position.clone());
             
                //Remove the first and last points of the line at flight-height untill the distance from airport to the first point is at least the sqrt of 2*(travelHeight^2). This causes an angle of 45 degrees at max.
             let distance = Math.sqrt(Math.pow(travelHeight, 2) * 2);
@@ -57,9 +57,9 @@ class RouteLine extends THREE.Line{
         {
                 //get the 3 points for the curve
             let midHeight = start.position.distanceTo(destination.position) + sphereRadius;
-            points.push(start.position);
-            points.push(start.position.lerp(destination.position,0.5).normalize().multiplyScalar(midHeight));
-            points.push(destination.position);
+            points.push(start.position.clone());
+            points.push(start.position.clone().lerp(destination.position,0.5).normalize().multiplyScalar(midHeight));
+            points.push(destination.position.clone());
             
         }
         
