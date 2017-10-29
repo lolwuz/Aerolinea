@@ -1,8 +1,8 @@
 class Airport extends THREE.Mesh{
     constructor(obj) {
-        let Geometry = new THREE.BoxGeometry(0.004, 0.004, 0.004);
+        let Geometry = new THREE.CircleBufferGeometry(0.003, 12);
         let Material = new THREE.MeshBasicMaterial({
-            color: 0xFF00FF
+            color: 0xCC2828
         });
 
         super(Geometry, Material);

@@ -55,7 +55,10 @@
         const clock = new THREE.Clock();
 
         var isNewRoute = false;
-        var newRoute = []; 
+        var newRoute = [];
+        var newRouteObjs = [];
+        var selectedAirport;
+        var hoversOverAirport;
 
         
 
@@ -66,6 +69,7 @@
             scene = new Scene();
             window.addEventListener('resize', onWindowResize, false);
             window.addEventListener( 'click', onMouseClick, false );
+            window.addEventListener('mousemove', onMouseMove, false);
 
             for (let i=0; i< scene.children[0].children.length; i++) {
                 if(scene.children[0].children[i].constructor.name === "Airport"){
@@ -106,7 +110,23 @@
             for ( let i = 0; i < intersects.length; i++ ) {
                 if(intersects[i].object.constructor.name === "Airport"){
                     if(isNewRoute){
-                        newRoute.push(intersects[i].object.info._id);
+                        let index = newRoute.indexOf(intersects[i].object.info._id)
+                        if (index === -1){
+                            newRoute.push(intersects[i].object.info._id);
+                            newRouteObjs.push(intersects[i].object);
+                            
+                            intersects[i].object.scale.set(1.75,1.75,1.75);
+                            intersects[i].object.material.color.set(0x00CE14);
+                        }
+                        else{
+                            newRouteObjs[index].scale.set(1,1,1);
+                            newRouteObjs[index].material.color.set(0xCC2828);
+                            console.log("xxxxxxxx");
+                            
+                            newRoute.splice(index, 1);
+                            newRouteObjs.splice(index, 1);
+                        }
+                        
                         document.getElementById("routeList").innerHTML = "";
 
                         for(let i = 0; i < newRoute.length; i++){
@@ -117,7 +137,56 @@
                     document.getElementById("Airport").innerText = intersects[i].object.info.name;
                     document.getElementById("AirportInfo").innerText = intersects[i].object.info;
                     document.getElementById("AirportImg").src="https://maps.googleapis.com/maps/api/staticmap?center="+ intersects[i].object.info.lat + "," + intersects[i].object.info.lon + "&zoom=8&size=400x250&key=AIzaSyCaqRZpDr07TXFnlyLr6ZOKJYCwwpBTbW0";
+                    
+                    if (selectedAirport !== undefined){
+                        selectedAirport.scale.set(1,1,1);
+                        selectedAirport.material.color.set(0xCC2828);
+                        console.log("yyyyyyyyyy");
+                        if (isNewRoute)
+                            selectedAirport = undefined;
+                    }
+                    
+                    if (!isNewRoute){
+                        selectedAirport = intersects[i].object;
+                        selectedAirport.scale.set(1.75,1.75,1.75);
+                        selectedAirport.material.color.set(0x00B9F2);
+                    }
+                    break;
+                }
+            }
+        }
+        
+        function onMouseMove(){
+            // calculate mouse position in normalized device coordinates
+            // (-1 to +1) for both components
+            mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
+            // update the picking ray with the camera and mouse position
+            raycaster.setFromCamera( mouse.clone(), scene.camera );
+
+            // calculate objects intersecting the picking ray
+            let intersects = raycaster.intersectObjects( scene.children[0].children );
+            
+            for ( let i = 0; i < intersects.length; i++ ) {
+                if(intersects[i].object.constructor.name === "Airport"){
+                    let hoversOverAirport_old = hoversOverAirport;
+                    hoversOverAirport = intersects[i].object;
+                    
+                    if (hoversOverAirport !== hoversOverAirport_old){
+                        if (hoversOverAirport_old !== undefined && hoversOverAirport_old !== selectedAirport)
+                            hoversOverAirport_old.scale.set(1,1,1);
+                        if (hoversOverAirport !== selectedAirport)
+                            hoversOverAirport.scale.set(2.5,2.5,2.5);
+                    }
+                    break;
+                }
+                else{
+                    if (hoversOverAirport !== undefined){
+                        if (hoversOverAirport !== selectedAirport)
+                            hoversOverAirport.scale.set(1,1,1);
+                        hoversOverAirport = undefined;
+                    }
                 }
             }
         }
