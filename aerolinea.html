@@ -32,12 +32,17 @@
         </div>
         <ul id="routeList" class="list-group list-group-flush">
         </ul>
+<<<<<<< HEAD
         
     </div>
 
     <div id="routeListCard" class="card">
         <div class="card-body">
 
+=======
+        <div id="routeListButtons" class="card-body">
+            <a id="newRouteButton" href="#" class="btn btn-primary" onclick="newroute()">New route</a>
+>>>>>>> 3668ad220e99a0b35b15f30195b397f67dd0abda
         </div>
     </div>
  
@@ -76,7 +81,6 @@
         const clock = new THREE.Clock();
 
         var isNewRoute = false;
-        var newRoute = [];
         var newRouteObjs = [];
         var selectedAirport;
         var hoversOverAirport;
@@ -133,9 +137,8 @@
             for ( let i = 0; i < intersects.length; i++ ) {
                 if(intersects[i].object.constructor.name === "Airport"){
                     if(isNewRoute){
-                        let index = newRoute.indexOf(intersects[i].object.info._id)
+                        let index = newRouteObjs.indexOf(intersects[i].object)
                         if (index === -1){
-                            newRoute.push(intersects[i].object.info._id);
                             newRouteObjs.push(intersects[i].object);
                             
                             intersects[i].object.scale.set(1.75,1.75,1.75);
@@ -145,14 +148,13 @@
                             newRouteObjs[index].scale.set(1,1,1);
                             newRouteObjs[index].material.color.set(0xCC2828);
                             
-                            newRoute.splice(index, 1);
                             newRouteObjs.splice(index, 1);
                         }
                         
                         document.getElementById("routeList").innerHTML = "";
 
-                        for(let i = 0; i < newRoute.length; i++){
-                            document.getElementById("routeList").innerHTML += "<li class='list-group-item'>" + newRoute[i] + "</li>"
+                        for(let i = 0; i < newRouteObjs.length; i++){
+                            document.getElementById("routeList").innerHTML += "<li class='list-group-item'>" + newRouteObjs[i].info.name + "</li>"
                         }
                     }
                     console.log(intersects[i].object.info.name);
@@ -221,58 +223,74 @@
                 selectedAirport = undefined;
             }
 
-            document.getElementById("newRouteButton").innerText = "Add route";
-            document.getElementById("newRouteButton").onclick = addroute;
-            
+            document.getElementById("routeListButtons").removeChild(newRouteButton);
+            document.getElementById("routeListButtons").innerHTML += '<a id="newRouteButton" href="#" class="btn btn-primary" onclick="addroute()">Add route</a>';
+            if (document.getElementById("cancelNewRouteButton") === null)
+            document.getElementById("routeListButtons").innerHTML += '<a id="cancelNewRouteButton" href="#" class="btn btn-primary" onclick="cancelnewroute()">Cancel</a>';
         }
-
-        async function addroute(){
-            // Reset button
-            document.getElementById("newRouteButton").innerText = "New route";
-            document.getElementById("newRouteButton").onclick = newroute;
-
-            // Parse to server query
-            let destinations = new Object();
-            for(let i = 0; i < newRoute.length; i++){
-                destinations['destinations[' + i + ']'] = newRoute[i];
-                
+        
+        function cancelnewroute(){
+            for (let i = 0; i < newRouteObjs.length; i++){
                 newRouteObjs[i].scale.set(1,1,1);
                 newRouteObjs[i].material.color.set(0xCC2828);
             }
-            // Create form body to x-form-urlenformed
-            let formBody = [];
-            for (var property in destinations) {
-              var encodedKey = encodeURIComponent(property);
-              var encodedValue = encodeURIComponent(destinations[property]);
-              formBody.push(encodedKey + "=" + encodedValue);
-            }
-            formBody = formBody.join("&");
+            isNewRoute = false;
+            newRouteObjs = []; 
+            document.getElementById("routeList").innerHTML = "";
+            document.getElementById("newRouteButton").innerText = "New route";
+            document.getElementById("newRouteButton").onclick = newroute;
+            document.getElementById("routeListButtons").removeChild(cancelNewRouteButton);
+        }
 
-            console.log(formBody);
-            console.log(getCookie("token"));
-        
-            // Post new route to server.
-            let response = await fetch('http://server.lolwuz.com:3000/airliner/' + getCookie("_id") + '/route', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Authorization": "JWT " + getCookie("token")
-                },
-                body: formBody
-            });
-         
-            console.log(newRoute);
-            // Create new visual route, only temporary. 
-            let airports = [];
-            for(let i = 0; i < newRoute.length; i++){
-                console.log(newRoute[i]);
-                for(let ii = 0; ii < scene.children[0].airportArray.length; ii++){
-                    if(newRoute[i] === scene.children[0].airportArray[ii].info._id){
-                        console.log("true");
-                        airports.push(scene.children[0].airportArray[ii]);
-                    }
+        async function addroute(){
+            if (newRouteObjs.length >= 2){
+                // Reset button
+                document.getElementById("newRouteButton").innerText = "New route";
+                document.getElementById("newRouteButton").onclick = newroute;
+                document.getElementById("routeListButtons").removeChild(cancelNewRouteButton);
+
+                // Parse to server query
+                let destinations = new Object();
+                for (let i = 0; i < newRouteObjs.length; i++)
+                    destinations['destinations[' + i + ']'] = newRouteObjs[i].info._id;
+
+                // Create form body to x-form-urlenformed
+                let formBody = [];
+                for (var property in destinations) {
+                  var encodedKey = encodeURIComponent(property);
+                  var encodedValue = encodeURIComponent(destinations[property]);
+                  formBody.push(encodedKey + "=" + encodedValue);
                 }
+                formBody = formBody.join("&");
+
+                console.log(formBody);
+                console.log(getCookie("token"));
+
+                // Post new route to server.
+                let response = await fetch('http://server.lolwuz.com:3000/airliner/' + getCookie("_id") + '/route', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "Authorization": "JWT " + getCookie("token")
+                    },
+                    body: formBody
+                });
+
+                // Create new visual route, only temporary. 
+                let new_route = new Route(newRouteObjs, new Airplane(0.01, 1, 0.01));
+                scene.children[0].routeArray.push(new_route);
+                scene.children[0].add(new_route); 
+
+                // Reset elements which were created or changed in the process
+                for (let i = 0; i < newRouteObjs.length; i++){
+                    newRouteObjs[i].scale.set(1,1,1);
+                    newRouteObjs[i].material.color.set(0xCC2828);
+                }
+                isNewRoute = false;
+                newRouteObjs = []; 
+                document.getElementById("routeList").innerHTML = "";
             }
+<<<<<<< HEAD
 
             console.log(airports);
             let new_route = new Route(airports, new Airplane(0.01, 1, 0.01));
@@ -284,6 +302,8 @@
 
             isNewRoute = false;
             newRoute = []; 
+=======
+>>>>>>> 3668ad220e99a0b35b15f30195b397f67dd0abda
         }
 
         function getCookie(cname) {
