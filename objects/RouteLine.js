@@ -14,10 +14,14 @@ class RouteLine extends THREE.Line{
         //this.spline = this.spline;
         
         this.length = 0;
+        this.maxHeight = 0;
         for (let i = 0; i < flightLine.length-1; i++)
         {
             this.length += flightLine[i].distanceTo(flightLine[i+1]);
+            if (this.maxHeight < flightLine[i].length())
+                this.maxHeight = flightLine[i].length();
         }
+        this.maxHeight -= sphereRadius;
     }
     
     getFlightLine(start, destination, sphereRadius, travelHeight, count)
@@ -91,8 +95,11 @@ class RouteLine extends THREE.Line{
     {
         if (points.length < 5)
             points = new THREE.CatmullRomCurve3(new THREE.CatmullRomCurve3(points).getSpacedPoints(points.length)).getPoints(15);
-        else if (points.length == 5)       
-            points = new THREE.CatmullRomCurve3(new THREE.CatmullRomCurve3(points).getSpacedPoints(points.length)).getPoints(25);
+        else if (points.length == 5){
+            points.splice(1, 1);
+            points.splice(2, 1);
+            points = new THREE.CatmullRomCurve3(new THREE.CatmullRomCurve3(points).getSpacedPoints(points.length)).getPoints(20);
+        }
         else
         {
                 //Get the begin and end curve-points

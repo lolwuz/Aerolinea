@@ -48,7 +48,7 @@ class Route extends THREE.Object3D {
             if (this.direction == 0)
                 this.percentInFlight += ((this.airplane.speed / this.routeLines.length) * delta) / routeLine.length;
             else
-                this.percentInFlight -= (this.airplane.speed * delta) / routeLine.length;
+                this.percentInFlight -= ((this.airplane.speed / this.routeLines.length) * delta) / routeLine.length;
 
             this.percentOnLine = (this.percentInFlight * this.routeLines.length) - this.onLine;
             if (this.percentOnLine <= 1 && this.percentOnLine >= 0)
@@ -58,7 +58,7 @@ class Route extends THREE.Object3D {
                 let newPosLength = Math.round(newPos.length()*10000)/10000;
                 if (newPosLength < this.travelHeight + this.sphereRadius)
                 {
-                    let newScale = (newPos.length() - this.sphereRadius) / this.travelHeight;
+                    let newScale = (newPos.length() - this.sphereRadius) / routeLine.maxHeight;
                     this.airplane.scale.set(newScale, newScale, newScale)
                 }
                 
