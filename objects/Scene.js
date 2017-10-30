@@ -2,7 +2,7 @@ class Scene extends THREE.Scene {
     constructor() {
         super();
         // Add camera to the scene.
-        this.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 10);
+        this.camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 120);
         this.camera.position.x = 3;
         this.camera.position.y = 0.5;
         this.renderer = new THREE.WebGLRenderer(
@@ -11,7 +11,7 @@ class Scene extends THREE.Scene {
                 canvas: gameCanvas
             }
         );
-        this.renderer.setClearColor(0x4f99ff, 1);
+        this.renderer.setClearColor(0x00264d, 1);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
 
@@ -30,14 +30,26 @@ class Scene extends THREE.Scene {
 
         this.addLight();
         this.add(new axisHelper(5));
-        
-        this.airplane = new Airplane(0.05, 3, 1000000);
-        this.add(this.airplane);
 
-        this.add(new Clouds());
-        
-        let Geometry = new THREE.BoxGeometry(0.05, 0.05, 0.05);
-        let Material = new THREE.MeshBasicMaterial({ color: 0xFF00FF });
+        // Load cubeMap
+        let path = "./src/starmap/";
+        let format = ".jpg";
+        var urls = [
+						path + 'px' + format, path + 'mx' + format,
+						path + 'py' + format, path + 'my' + format,
+						path + 'pz' + format, path + 'mz' + format
+					];
+        let cubeMaterial = new THREE.CubeTextureLoader().load(urls);
+
+        let material = new THREE.MeshBasicMaterial({
+            map: cubeMaterial,
+            side: THREE.DoubleSide
+        });
+
+
+        this.cubeMesh = new THREE.Mesh(new THREE.BoxGeometry(100, 100, 100), material);
+        this.add(this.cubeMesh);
+
     
     }
 

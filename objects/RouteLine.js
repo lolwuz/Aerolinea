@@ -1,4 +1,4 @@
-class RouteLine extends THREE.Line{
+class RouteLine extends THREE.Mesh{
     constructor(startAirport, destinationAirport, sphereRadius, travelHeight, colour) {
         super();
         
@@ -7,17 +7,29 @@ class RouteLine extends THREE.Line{
         
         let flightLine = this.getFlightLine(this.startAirport, this.destinationAirport, sphereRadius, travelHeight, 4);
         let smoothFlightLine = this.smoothFlightLine(flightLine, sphereRadius, travelHeight, true, true);
-        
-        this.geometry = this.createGeometry(smoothFlightLine);
-        this.material = new THREE.MeshStandardMaterial({ emissive: colour });
         this.spline = new THREE.CatmullRomCurve3(new THREE.CatmullRomCurve3(flightLine).getSpacedPoints(flightLine.length));
-        //this.spline = this.spline;
+        
+        var line = new MeshLine();
+        line.setGeometry(this.createGeometry(smoothFlightLine));
+        this.geometry = line.geometry;
+        this.material = new MeshLineMaterial({
+            color: new THREE.Color(colour),
+            lineWidth: 5,
+            resolution: resolution,
+            sizeAttenuation: false,
+            near: scene.camera.near,
+            far: scene.camera.far
+        });
         
         this.length = 0;
+        this.maxHeight = 0;
         for (let i = 0; i < flightLine.length-1; i++)
         {
             this.length += flightLine[i].distanceTo(flightLine[i+1]);
+            if (this.maxHeight < flightLine[i].length())
+                this.maxHeight = flightLine[i].length();
         }
+        this.maxHeight -= sphereRadius;
     }
     
     getFlightLine(start, destination, sphereRadius, travelHeight, count)
