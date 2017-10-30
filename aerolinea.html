@@ -61,6 +61,7 @@
     <script src="javascript/three.js"></script>
     <script src="javascript/controls/OrbitControls.js"></script>
     <script src="javascript/OBJLoader.js"></script>
+    <script src="javascript/THREE.MeshLine.js"></script>
     <script src="objects/Airliner.js"></script>
     <script src="objects/Scene.js"></script>
     <script src="objects/World.js"></script>
@@ -79,6 +80,8 @@
         var newRouteObjs = [];
         var selectedAirport;
         var hoversOverAirport;
+        var selectedRoute;
+        var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
 
         // Airliner 
         var airliner; 
@@ -114,6 +117,7 @@
             scene.camera.aspect = window.innerWidth / window.innerHeight;
             scene.camera.updateProjectionMatrix();
             scene.renderer.setSize(window.innerWidth, window.innerHeight);
+            resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
 
         }
 
@@ -222,19 +226,6 @@
             document.getElementById("routeListButtons").innerHTML += '<a id="newRouteButton" href="#" class="card-link" onclick="addroute()">Add route</a>';
             document.getElementById("routeListButtons").innerHTML += '<a id="cancelNewRouteButton" href="#" class="card-link" onclick="cancelnewroute()">Cancel</a>';
         }
-        
-        function cancelnewroute(){
-            for (let i = 0; i < newRouteObjs.length; i++){
-                newRouteObjs[i].scale.set(1,1,1);
-                newRouteObjs[i].material.color.set(0xCC2828);
-            }
-            isNewRoute = false;
-            newRouteObjs = []; 
-            document.getElementById("routeList").innerHTML = "";
-            document.getElementById("routeListButtons").removeChild(newRouteButton);
-            document.getElementById("routeListButtons").innerHTML += '<a id="newRouteButton" href="#" class="card-link" onclick="newroute()">New route</a>';
-            document.getElementById("routeListButtons").removeChild(cancelNewRouteButton);
-        }
 
         async function addroute(){
             if (newRouteObjs.length >= 2){
@@ -281,6 +272,37 @@
                 document.getElementById("routeListButtons").removeChild(newRouteButton);
                 document.getElementById("routeListButtons").innerHTML += '<a id="newRouteButton" href="#" class="btn btn-primary" onclick="addroute()">Add route</a>';
                 document.getElementById("routeListButtons").removeChild(cancelNewRouteButton);
+            }
+        }
+        
+        function cancelnewroute(){
+            for (let i = 0; i < newRouteObjs.length; i++){
+                newRouteObjs[i].scale.set(1,1,1);
+                newRouteObjs[i].material.color.set(0xCC2828);
+            }
+            isNewRoute = false;
+            newRouteObjs = []; 
+            document.getElementById("routeList").innerHTML = "";
+            document.getElementById("routeListButtons").removeChild(newRouteButton);
+            document.getElementById("routeListButtons").innerHTML += '<a id="newRouteButton" href="#" class="card-link" onclick="newroute()">New route</a>';
+            document.getElementById("routeListButtons").removeChild(cancelNewRouteButton);
+        }
+        
+        function selectroute(index){
+            deselectroute();
+            
+            selectedRoute = scene.children[0].routeArray[index];
+            for (let i = 1; i < selectedRoute.children.length; i++){
+                selectedRoute.children[i].material.uniforms.lineWidth.value = 15;
+                selectedRoute.children[i].material.depthTest = false;
+            }
+        }
+        function deselectroute(){
+            if (selectedRoute !== undefined){
+                for (let i = 1; i < selectedRoute.children.length; i++){
+                    selectedRoute.children[i].material.uniforms.lineWidth.value = 5;
+                    selectedRoute.children[i].material.depthTest = true;
+                }
             }
         }
 
