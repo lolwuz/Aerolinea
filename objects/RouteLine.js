@@ -56,7 +56,8 @@ class RouteLine extends THREE.Line{
         else
         {
                 //get the 3 points for the curve
-            let midHeight = start.position.distanceTo(destination.position) + sphereRadius;
+            let midHeight = (start.position.distanceTo(destination.position) / 2) + sphereRadius;
+            if (midHeight > totalHeight) midHeight = totalHeight;
             points.push(start.position.clone());
             points.push(start.position.clone().lerp(destination.position,0.5).normalize().multiplyScalar(midHeight));
             points.push(destination.position.clone());
@@ -89,9 +90,9 @@ class RouteLine extends THREE.Line{
     smoothFlightLine(points, sphereRadius, travelHeight, smoothBegin, smoothEnd)
     {
         if (points.length < 5)
-            points = new THREE.CatmullRomCurve3(points).getPoints(15);
+            points = new THREE.CatmullRomCurve3(new THREE.CatmullRomCurve3(points).getSpacedPoints(points.length)).getPoints(15);
         else if (points.length == 5)       
-            points = new THREE.CatmullRomCurve3(points).getPoints(25);
+            points = new THREE.CatmullRomCurve3(new THREE.CatmullRomCurve3(points).getSpacedPoints(points.length)).getPoints(25);
         else
         {
                 //Get the begin and end curve-points

@@ -46,7 +46,7 @@ class Route extends THREE.Object3D {
 
                 //Set new position (in % along its path)
             if (this.direction == 0)
-                this.percentInFlight += (this.airplane.speed * delta) / routeLine.length;
+                this.percentInFlight += ((this.airplane.speed / this.routeLines.length) * delta) / routeLine.length;
             else
                 this.percentInFlight -= (this.airplane.speed * delta) / routeLine.length;
 
