@@ -75,4 +75,13 @@ class Scene extends THREE.Scene {
         this.renderer.render(this, this.camera);
 
     }
+
+    // cloud functions
+    static randomCloud() {
+        let val = Math.random()*2000-100;
+        while(val > 900 && val < 1100){
+            Scene.ranCloud();
+        }
+        return val;
+    }
 }

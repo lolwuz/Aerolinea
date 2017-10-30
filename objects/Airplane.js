@@ -15,7 +15,7 @@ class Airplane extends THREE.Object3D {
                 object.traverse(function(child) {
                     if (child instanceof THREE.Mesh)
                         child.material.map = texture;
-                })
+                });
                 
                 object.scale.set(scale, scale, scale);
                 object.rotateY(Math.PI);
