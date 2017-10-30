@@ -78,7 +78,7 @@ class World extends THREE.Object3D {
                 }      
             }
             console.log(routeString);
-            document.getElementById("existingRouteList").innerHTML += "<li class='list-group-item list-group-item-action'>" + routeString + "</li>"; 
+            document.getElementById("existingRouteList").innerHTML += "<li class='list-group-item list-group-item-action' onclick='selectroute(" + i + ")'>" + routeString + "</li>"; 
         }
     }
 }
