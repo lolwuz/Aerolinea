@@ -32,17 +32,12 @@
         </div>
         <ul id="routeList" class="list-group list-group-flush">
         </ul>
-<<<<<<< HEAD
         
     </div>
 
     <div id="routeListCard" class="card">
         <div class="card-body">
 
-=======
-        <div id="routeListButtons" class="card-body">
-            <a id="newRouteButton" href="#" class="btn btn-primary" onclick="newroute()">New route</a>
->>>>>>> 3668ad220e99a0b35b15f30195b397f67dd0abda
         </div>
     </div>
  
@@ -290,10 +285,9 @@
                 newRouteObjs = []; 
                 document.getElementById("routeList").innerHTML = "";
             }
-<<<<<<< HEAD
 
             console.log(airports);
-            let new_route = new Route(airports, new Airplane(0.01, 1, 0.01));
+            let new_route = new Route(newRouteObjs, new Airplane(0.01, 1, 0.01));
             scene.children[0].routeArray.push(new_route);
             scene.children[0].add(new_route); 
 
@@ -302,8 +296,6 @@
 
             isNewRoute = false;
             newRoute = []; 
-=======
->>>>>>> 3668ad220e99a0b35b15f30195b397f67dd0abda
         }
 
         function getCookie(cname) {
