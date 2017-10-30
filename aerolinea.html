@@ -29,7 +29,7 @@
     <div id="routeCard" class="card">
         <ul id="routeList" class="list-group list-group-flush">
         </ul>
-        <div class="card-body">
+        <div id="routeListButtons" class="card-body">
             <a id="newRouteButton" href="#" class="btn btn-primary" onclick="newroute()">New route</a>
         </div>
     </div>
@@ -194,53 +194,73 @@
                 selectedAirport = undefined;
             }
 
-            document.getElementById("newRouteButton").innerText = "Add route";
-            document.getElementById("newRouteButton").onclick = addroute;
-            
+            document.getElementById("routeListButtons").removeChild(newRouteButton);
+            document.getElementById("routeListButtons").innerHTML += '<a id="newRouteButton" href="#" class="btn btn-primary" onclick="addroute()">Add route</a>';
+            if (document.getElementById("cancelNewRouteButton") === null)
+            document.getElementById("routeListButtons").innerHTML += '<a id="cancelNewRouteButton" href="#" class="btn btn-primary" onclick="cancelnewroute()">Cancel</a>';
         }
-
-        async function addroute(){
-            // Reset button
-            document.getElementById("newRouteButton").innerText = "New route";
-            document.getElementById("newRouteButton").onclick = newroute;
-
-            // Parse to server query
-            let destinations = new Object();
-            for(let i = 0; i < newRouteObjs.length; i++){
-                destinations['destinations[' + i + ']'] = newRouteObjs[i].info._id;
-                
+        
+        function cancelnewroute(){
+            for (let i = 0; i < newRouteObjs.length; i++){
                 newRouteObjs[i].scale.set(1,1,1);
                 newRouteObjs[i].material.color.set(0xCC2828);
             }
-            // Create form body to x-form-urlenformed
-            let formBody = [];
-            for (var property in destinations) {
-              var encodedKey = encodeURIComponent(property);
-              var encodedValue = encodeURIComponent(destinations[property]);
-              formBody.push(encodedKey + "=" + encodedValue);
-            }
-            formBody = formBody.join("&");
-
-            console.log(formBody);
-            console.log(getCookie("token"));
-        
-            // Post new route to server.
-            let response = await fetch('http://server.lolwuz.com:3000/airliner/' + getCookie("_id") + '/route', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Authorization": "JWT " + getCookie("token")
-                },
-                body: formBody
-            });
-         
-            // Create new visual route, only temporary. 
-            let new_route = new Route(newRouteObjs, new Airplane(0.01, 1, 0.01));
-            scene.children[0].routeArray.push(new_route);
-            scene.children[0].add(new_route); 
-
             isNewRoute = false;
-            newRoute = []; 
+            newRouteObjs = []; 
+            document.getElementById("routeList").innerHTML = "";
+            document.getElementById("newRouteButton").innerText = "New route";
+            document.getElementById("newRouteButton").onclick = newroute;
+            document.getElementById("routeListButtons").removeChild(cancelNewRouteButton);
+        }
+
+        async function addroute(){
+            if (newRouteObjs.length >= 2){
+                // Reset button
+                document.getElementById("newRouteButton").innerText = "New route";
+                document.getElementById("newRouteButton").onclick = newroute;
+                document.getElementById("routeListButtons").removeChild(cancelNewRouteButton);
+
+                // Parse to server query
+                let destinations = new Object();
+                for (let i = 0; i < newRouteObjs.length; i++)
+                    destinations['destinations[' + i + ']'] = newRouteObjs[i].info._id;
+
+                // Create form body to x-form-urlenformed
+                let formBody = [];
+                for (var property in destinations) {
+                  var encodedKey = encodeURIComponent(property);
+                  var encodedValue = encodeURIComponent(destinations[property]);
+                  formBody.push(encodedKey + "=" + encodedValue);
+                }
+                formBody = formBody.join("&");
+
+                console.log(formBody);
+                console.log(getCookie("token"));
+
+                // Post new route to server.
+                let response = await fetch('http://server.lolwuz.com:3000/airliner/' + getCookie("_id") + '/route', {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "Authorization": "JWT " + getCookie("token")
+                    },
+                    body: formBody
+                });
+
+                // Create new visual route, only temporary. 
+                let new_route = new Route(newRouteObjs, new Airplane(0.01, 1, 0.01));
+                scene.children[0].routeArray.push(new_route);
+                scene.children[0].add(new_route); 
+
+                // Reset elements which were created or changed in the process
+                for (let i = 0; i < newRouteObjs.length; i++){
+                    newRouteObjs[i].scale.set(1,1,1);
+                    newRouteObjs[i].material.color.set(0xCC2828);
+                }
+                isNewRoute = false;
+                newRouteObjs = []; 
+                document.getElementById("routeList").innerHTML = "";
+            }
         }
 
         function getCookie(cname) {
