@@ -27,12 +27,14 @@
     </div>
 
     <div id="routeCard" class="card">
-        <div id="routeListButtons" class="card-body">
-            <a id="newRouteButton" href="#" class="btn btn-primary" onclick="newroute()">New route</a>
-        </div>
-        <ul id="routeList" class="list-group list-group-flush">
-        </ul>
-        
+        <div class="card-body">
+            <div id="routeListButtons" >
+                <a id="newRouteButton" href="#" class="card-link" onclick="newroute()">New route</a>
+            </div>
+        </div> 
+        <div id="routeListBody">
+            <ul id="routeList" class="list-group list-group-flush"></ul>
+        </div>      
     </div>
 
     <div id="routeListCard" class="card">
@@ -219,8 +221,8 @@
             }
 
             document.getElementById("routeListButtons").removeChild(newRouteButton);
-            document.getElementById("routeListButtons").innerHTML += '<a id="newRouteButton" href="#" class="btn btn-primary" onclick="addroute()">Add route</a>';
-            document.getElementById("routeListButtons").innerHTML += '<a id="cancelNewRouteButton" href="#" class="btn btn-primary" onclick="cancelnewroute()">Cancel</a>';
+            document.getElementById("routeListButtons").innerHTML += '<a id="newRouteButton" href="#" class="card-link" onclick="addroute()">Add route</a>';
+            document.getElementById("routeListButtons").innerHTML += '<a id="cancelNewRouteButton" href="#" class="card-link" onclick="cancelnewroute()">Cancel</a>';
         }
         
         function cancelnewroute(){
@@ -232,7 +234,7 @@
             newRouteObjs = []; 
             document.getElementById("routeList").innerHTML = "";
             document.getElementById("routeListButtons").removeChild(newRouteButton);
-            document.getElementById("routeListButtons").innerHTML += '<a id="newRouteButton" href="#" class="btn btn-primary" onclick="newroute()">New route</a>';
+            document.getElementById("routeListButtons").innerHTML += '<a id="newRouteButton" href="#" class="card-link" onclick="newroute()">New route</a>';
             document.getElementById("routeListButtons").removeChild(cancelNewRouteButton);
         }
 

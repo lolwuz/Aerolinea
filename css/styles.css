@@ -20,7 +20,6 @@ canvas {
 
 #routeCard{
     position: absolute;
-    overflow-y: scroll;
 
     top: 1%;
     right: 1%;
@@ -28,6 +27,10 @@ canvas {
     height: 30%;
 
     opacity: 0.8;
+}
+
+#routeListBody{
+    overflow-y: scroll;
 }
 
 #routeListCard{
