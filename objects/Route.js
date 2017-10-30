@@ -48,7 +48,7 @@ class Route extends THREE.Object3D {
             if (this.direction == 0)
                 this.percentInFlight += ((this.airplane.speed / this.routeLines.length) * delta) / routeLine.length;
             else
-                this.percentInFlight -= (this.airplane.speed * delta) / routeLine.length;
+                this.percentInFlight -= ((this.airplane.speed / this.routeLines.length) * delta) / routeLine.length;
 
             this.percentOnLine = (this.percentInFlight * this.routeLines.length) - this.onLine;
             if (this.percentOnLine <= 1 && this.percentOnLine >= 0)

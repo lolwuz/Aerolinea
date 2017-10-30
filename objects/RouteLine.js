@@ -91,8 +91,11 @@ class RouteLine extends THREE.Line{
     {
         if (points.length < 5)
             points = new THREE.CatmullRomCurve3(new THREE.CatmullRomCurve3(points).getSpacedPoints(points.length)).getPoints(15);
-        else if (points.length == 5)       
-            points = new THREE.CatmullRomCurve3(new THREE.CatmullRomCurve3(points).getSpacedPoints(points.length)).getPoints(25);
+        else if (points.length == 5){
+            points.splice(1, 1);
+            points.splice(2, 1);
+            points = new THREE.CatmullRomCurve3(new THREE.CatmullRomCurve3(points).getSpacedPoints(points.length)).getPoints(20);
+        }
         else
         {
                 //Get the begin and end curve-points
