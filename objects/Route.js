@@ -58,7 +58,7 @@ class Route extends THREE.Object3D {
                 let newPosLength = Math.round(newPos.length()*10000)/10000;
                 if (newPosLength < this.travelHeight + this.sphereRadius)
                 {
-                    let newScale = (newPos.length() - this.sphereRadius) / this.travelHeight;
+                    let newScale = (newPos.length() - this.sphereRadius) / routeLine.maxHeight;
                     this.airplane.scale.set(newScale, newScale, newScale)
                 }
                 

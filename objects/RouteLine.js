@@ -14,10 +14,14 @@ class RouteLine extends THREE.Line{
         //this.spline = this.spline;
         
         this.length = 0;
+        this.maxHeight = 0;
         for (let i = 0; i < flightLine.length-1; i++)
         {
             this.length += flightLine[i].distanceTo(flightLine[i+1]);
+            if (this.maxHeight < flightLine[i].length())
+                this.maxHeight = flightLine[i].length();
         }
+        this.maxHeight -= sphereRadius;
     }
     
     getFlightLine(start, destination, sphereRadius, travelHeight, count)
