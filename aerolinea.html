@@ -63,6 +63,7 @@
     <script src="javascript/three.js"></script>
     <script src="javascript/controls/OrbitControls.js"></script>
     <script src="javascript/OBJLoader.js"></script>
+    <script src="javascript/THREE.MeshLine.js"></script>
     <script src="objects/Airliner.js"></script>
     <script src="objects/Scene.js"></script>
     <script src="objects/World.js"></script>
@@ -81,6 +82,7 @@
         var newRouteObjs = [];
         var selectedAirport;
         var hoversOverAirport;
+        var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
 
         // Airliner 
         var airliner; 
@@ -116,6 +118,7 @@
             scene.camera.aspect = window.innerWidth / window.innerHeight;
             scene.camera.updateProjectionMatrix();
             scene.renderer.setSize(window.innerWidth, window.innerHeight);
+            resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
 
         }
 
