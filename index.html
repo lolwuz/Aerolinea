@@ -1,266 +1,175 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <title>Aerolinea login</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-
-    <title>Aerolínea</title>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-
-<body>
-    <div id="infoCard" class="card">
-        <img id="AirportImg" class="card-img-top" src="..." alt="Card image cap">
-        <div class="card-body">
-            <h4 id="Airport">Airport Name</h4>
-            <p id="AirportInfo" class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Buy landing rights</a>
-        </div>
-    </div>
-
-    <div id="routeCard" class="card">
-        <ul id="routeList" class="list-group list-group-flush">
-        </ul>
-        <div class="card-body">
-            <a id="newRouteButton" href="#" class="btn btn-primary" onclick="newroute()">New route</a>
-        </div>
-    </div>
- 
-
-    <canvas id="gameCanvas"></canvas>
-
-    <script src="javascript/three.js"></script>
-    <script src="javascript/controls/OrbitControls.js"></script>
-    <script src="javascript/OBJLoader.js"></script>
-    <script src="objects/Scene.js"></script>
-    <script src="objects/World.js"></script>
-    <script src="objects/Airport.js"></script>
-    <script src="objects/Airplane.js"></script>
-    <script src="objects/Route.js"></script>
-    <script src="objects/RouteLine.js"></script>
-    <script src="objects/Clouds.js"></script>
-    <script>
-
-        var scene;
-        var raycaster = new THREE.Raycaster();
-        var mouse = new THREE.Vector2();
-        const clock = new THREE.Clock();
-
-        var isNewRoute = false;
-        var newRoute = [];
-        var newRouteObjs = [];
-        var selectedAirport;
-        var hoversOverAirport;
-
-        
-
-        init();
-        animate();
-
-        function init() {
-            scene = new Scene();
-            window.addEventListener('resize', onWindowResize, false);
-            window.addEventListener( 'click', onMouseClick, false );
-            window.addEventListener('mousemove', onMouseMove, false);
-
-            for (let i=0; i< scene.children[0].children.length; i++) {
-                if(scene.children[0].children[i].constructor.name === "Airport"){
-                    // document.getElementById("AirportList").innerHTML += "<a href=\"#\" class=\"list-group-item list-group-item-action\">" + scene.children[0].children[i].info.name + "</a>";
-                }
-            }
-        }
-
-        function animate() {
-            
-            let delta = clock.getDelta();
-
-            requestAnimationFrame(animate);
-            scene.update(delta);
-
-        }
-
-        function onWindowResize() {
-
-            scene.camera.aspect = window.innerWidth / window.innerHeight;
-            scene.camera.updateProjectionMatrix();
-            scene.renderer.setSize(window.innerWidth, window.innerHeight);
-
-        }
-
-        function onMouseClick( event ) {
-            // calculate mouse position in normalized device coordinates
-            // (-1 to +1) for both components
-            mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-            mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-            // update the picking ray with the camera and mouse position
-            raycaster.setFromCamera( mouse.clone(), scene.camera );
-
-            // calculate objects intersecting the picking ray
-            let intersects = raycaster.intersectObjects( scene.children[0].children );
-            
-            for ( let i = 0; i < intersects.length; i++ ) {
-                if(intersects[i].object.constructor.name === "Airport"){
-                    if(isNewRoute){
-                        let index = newRoute.indexOf(intersects[i].object.info._id)
-                        if (index === -1){
-                            newRoute.push(intersects[i].object.info._id);
-                            newRouteObjs.push(intersects[i].object);
-                            
-                            intersects[i].object.scale.set(1.75,1.75,1.75);
-                            intersects[i].object.material.color.set(0x00CE14);
-                        }
-                        else{
-                            newRouteObjs[index].scale.set(1,1,1);
-                            newRouteObjs[index].material.color.set(0xCC2828);
-                            
-                            newRoute.splice(index, 1);
-                            newRouteObjs.splice(index, 1);
-                        }
-                        
-                        document.getElementById("routeList").innerHTML = "";
-
-                        for(let i = 0; i < newRoute.length; i++){
-                            document.getElementById("routeList").innerHTML += "<li class='list-group-item'>" + newRoute[i] + "</li>"
-                        }
-                    }
-                    console.log(intersects[i].object.info.name);
-                    document.getElementById("Airport").innerText = intersects[i].object.info.name;
-                    document.getElementById("AirportInfo").innerText = intersects[i].object.info;
-                    document.getElementById("AirportImg").src="https://maps.googleapis.com/maps/api/staticmap?center="+ intersects[i].object.info.lat + "," + intersects[i].object.info.lon + "&zoom=8&size=400x250&key=AIzaSyCaqRZpDr07TXFnlyLr6ZOKJYCwwpBTbW0";
-                    
-                    if (selectedAirport !== undefined){
-                        selectedAirport.scale.set(1,1,1);
-                        selectedAirport.material.color.set(0xCC2828);
-                        if (isNewRoute)
-                            selectedAirport = undefined;
-                    }
-                    
-                    if (!isNewRoute){
-                        selectedAirport = intersects[i].object;
-                        selectedAirport.scale.set(1.75,1.75,1.75);
-                        selectedAirport.material.color.set(0x00B9F2);
-                    }
-                    break;
-                }
-            }
-        }
-        
-        function onMouseMove(){
-            // calculate mouse position in normalized device coordinates
-            // (-1 to +1) for both components
-            mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-            mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-
-            // update the picking ray with the camera and mouse position
-            raycaster.setFromCamera( mouse.clone(), scene.camera );
-
-            // calculate objects intersecting the picking ray
-            let intersects = raycaster.intersectObjects( scene.children[0].children );
-            
-            for ( let i = 0; i < intersects.length; i++ ) {
-                if(intersects[i].object.constructor.name === "Airport"){
-                    let hoversOverAirport_old = hoversOverAirport;
-                    hoversOverAirport = intersects[i].object;
-                    
-                    if (hoversOverAirport !== hoversOverAirport_old){
-                        if (hoversOverAirport_old !== undefined && hoversOverAirport_old !== selectedAirport)
-                            hoversOverAirport_old.scale.set(1,1,1);
-                        if (hoversOverAirport !== selectedAirport)
-                            hoversOverAirport.scale.set(2.5,2.5,2.5);
-                    }
-                    break;
-                }
-                else{
-                    if (hoversOverAirport !== undefined){
-                        if (hoversOverAirport !== selectedAirport)
-                            hoversOverAirport.scale.set(1,1,1);
-                        hoversOverAirport = undefined;
-                    }
-                }
-            }
-        }
-
-        function newroute(){
-            isNewRoute = true;
-            
-            if (selectedAirport !== undefined){
-                selectedAirport.scale.set(1,1,1);
-                selectedAirport.material.color.set(0xCC2828);
-                selectedAirport = undefined;
-            }
-
-            document.getElementById("newRouteButton").innerText = "Add route";
-            document.getElementById("newRouteButton").onclick = addroute;
-            
-        }
-
-        async function addroute(){
     
-            console.log("add route");
-            document.getElementById("newRouteButton").innerText = "New route";
-            document.getElementById("newRouteButton").onclick = newroute;
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container">
+        <br>
+        <div class="row">
+            <div class="col-sm">
+                <h1>Aerolinea</h1>
+                <div id="error"></div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-6">
+                <div class="card">
+                    <h4 class="card-header">Login</h4>
+                    <div class="card-body">
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label for="InputEmail1">Email address</label>
+                                <input type="email" class="form-control" id="InputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                            </div>
+                            <div class="form-group">
+                                <label for="InputPassword1">Password</label>
+                                <input type="password" class="form-control" id="InputPassword1" placeholder="Password">
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input">
+                                Remember me?
+                                </label>
+                            </div>
+                            <a class="btn btn-primary" onclick="login()">Login</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-1">
+                <h3 class="text-center">or</h3>
+            </div>
+            <div class="col-5">
+                <div class="card border-primary">
+                    <h4 class="card-header">Register</h4>
+                    <div class="card-body">
+                        <form id="registerForm">
+                            <div class="form-group">
+                                <label for="InputEmail1">Login information</label>
+                                <input type="email" class="form-control" id="InputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="InputPassword1" placeholder="Password">
+                                <small id="emailHelp" class="form-text text-muted">We'll never share your information with anyone else.</small>
+                            </div>
+                            <div class="form-group">
+                                    <label for="InputAirlinerName">Airliner info</label>
+                                    <input type="text" class="form-control" id="InputAirlinerName" placeholder="Username">
+                                </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="InputAirlinerName" placeholder="Airliner name">
+                            </div>
+                            
+                            <a class="btn btn-primary" onclick="register()">Register</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            let destinations = new Object();
+    <script>
+        async function login(){
+            let emailForm = document.getElementById("loginForm").elements[0].value;
+            let passwordForm = document.getElementById("loginForm").elements[1].value;
 
-            for(let i = 0; i < newRoute.length; i++){
-                destinations['destinations[' + i + ']'] = newRoute[i];
-                
-                newRouteObjs[i].scale.set(1,1,1);
-                newRouteObjs[i].material.color.set(0xCC2828);
-            }
-
+            let details = {
+                'email': emailForm,
+                'password': passwordForm
+            };
+            
             let formBody = [];
-            for (var property in destinations) {
+            for (var property in details) {
               var encodedKey = encodeURIComponent(property);
-              var encodedValue = encodeURIComponent(destinations[property]);
+              var encodedValue = encodeURIComponent(details[property]);
               formBody.push(encodedKey + "=" + encodedValue);
             }
             formBody = formBody.join("&");
-
+             
             console.log(formBody);
-            console.log(getCookie("token"));
-        
-            let id = "59e9f093a8c44e1774b155a5";
-            let response = await fetch('http://server.lolwuz.com:3000/airliner/' + id + '/route', {
+            let response = await fetch('http://server.lolwuz.com:3000/auth/sign_in', {
                 method: 'POST',
+                mode: "cors",
                 headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Authorization": "JWT " + getCookie("token")
+                    "Accept": "application/json",
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: formBody
+            });
+
+            let data = await response.json();
+
+            if(data.message == null){
+                console.log(data);
+                document.cookie = "token=" + data.token;
+                document.cookie = "_id=" + data._id;
+                // Redirect to the game
+                window.location.replace("aerolinea.html");
+            }
+            else{
+                document.getElementById("error").innerHTML = "<div class='alert alert-warning' role='alert'>" + data.message +  "</div>"
+                console.log("error: ")
+                console.log(data);
+            }         
+        }
+
+        async function register(){
+            let emailForm = document.getElementById("registerForm").elements[0].value;
+            let passwordForm = document.getElementById("registerForm").elements[1].value;
+            let usernameForm = document.getElementById("registerForm").elements[2].value;
+            let airlinerNameForm = document.getElementById("registerForm").elements[3].value;
+
+            let details = {
+                'email': emailForm,
+                'password': passwordForm,
+                'fullName': usernameForm,
+                'name': airlinerNameForm,
+                'money': 100000
+            };
+            
+            let formBody = [];
+            for (var property in details) {
+              var encodedKey = encodeURIComponent(property);
+              var encodedValue = encodeURIComponent(details[property]);
+              formBody.push(encodedKey + "=" + encodedValue);
+            }
+            formBody = formBody.join("&");
+             
+            console.log(formBody);
+            let response = await fetch('http://server.lolwuz.com:3000/auth/register', {
+                method: 'POST',
+                mode: "cors",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/x-www-form-urlencoded"
                 },
                 body: formBody
             });
             
-            let data = await response;
-            console.log(data);
-
-            isNewRoute = false;
-            newRoute = []; 
-        }
-
-        function getCookie(cname) {
-            var name = cname + "=";
-            var decodedCookie = decodeURIComponent(document.cookie);
-            var ca = decodedCookie.split(';');
-            for(var i = 0; i <ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
+            let data = await response.json();
+            if(data.message == null){
+                console.log(data);
+                document.getElementById("error").innerHTML = "<div class='alert alert-success' role='alert'>" + data.fullName + " has created a new airliner called " + data.name +  "</div>"
             }
+            else{
+                document.getElementById("error").innerHTML = "<div class='alert alert-warning' role='alert'>" + data.message.message +  "</div>"
+                console.log("error: ")
+                console.log(data);
+            }  
         }
-
     </script>
-</body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  </body>
 </html>

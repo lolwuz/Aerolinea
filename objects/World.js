@@ -47,9 +47,9 @@ class World extends THREE.Object3D {
 
     async getRoutesFromAPI(){
         const id = "59e9f093a8c44e1774b155a5";
-        const response = await fetch("http://server.lolwuz.com:3000/airliner/" + id + "/route");
+        console.log(getCookie("_id"));
+        const response = await fetch("http://server.lolwuz.com:3000/airliner/" + getCookie("_id") + "/route");
         const responseJson = await response.json();
-        console.log(responseJson);
         for(let i = 0; i < responseJson.length; i++){
             let airports = [];
             for(let ii = 0; ii < responseJson[i].destinations.length; ii++){

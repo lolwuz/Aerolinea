@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>Aerolínea</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div id="infoCard" class="card">
+        <img id="AirportImg" class="card-img-top" src="..." alt="Card image cap">
+        <div class="card-body">
+            <h4 id="Airport">Airport Name</h4>
+            <p id="AirportInfo" class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <a href="#" class="btn btn-primary">Buy landing rights</a>
+        </div>
+    </div>
+
+    <div id="routeCard" class="card">
+        <ul id="routeList" class="list-group list-group-flush">
+        </ul>
+        <div class="card-body">
+            <a id="newRouteButton" href="#" class="btn btn-primary" onclick="newroute()">New route</a>
+        </div>
+    </div>
+ 
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script src="javascript/three.js"></script>
+    <script src="javascript/controls/OrbitControls.js"></script>
+    <script src="javascript/OBJLoader.js"></script>
+    <script src="objects/Scene.js"></script>
+    <script src="objects/World.js"></script>
+    <script src="objects/Airport.js"></script>
+    <script src="objects/Airplane.js"></script>
+    <script src="objects/Route.js"></script>
+    <script src="objects/RouteLine.js"></script>
+    <script src="objects/Clouds.js"></script>
+    <script>
+
+        var scene;
+        var raycaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2();
+        const clock = new THREE.Clock();
+
+        var isNewRoute = false;
+        var newRoute = [];
+        var newRouteObjs = [];
+        var selectedAirport;
+        var hoversOverAirport;
+
+
+        init();
+        animate();
+
+        function init() {
+            scene = new Scene();
+            window.addEventListener('resize', onWindowResize, false);
+            window.addEventListener( 'click', onMouseClick, false );
+            window.addEventListener('mousemove', onMouseMove, false);
+
+            for (let i=0; i< scene.children[0].children.length; i++) {
+                if(scene.children[0].children[i].constructor.name === "Airport"){
+                    // document.getElementById("AirportList").innerHTML += "<a href=\"#\" class=\"list-group-item list-group-item-action\">" + scene.children[0].children[i].info.name + "</a>";
+                }
+            }
+        }
+
+        function animate() {
+            
+            let delta = clock.getDelta();
+
+            requestAnimationFrame(animate);
+            scene.update(delta);
+
+        }
+
+        function onWindowResize() {
+
+            scene.camera.aspect = window.innerWidth / window.innerHeight;
+            scene.camera.updateProjectionMatrix();
+            scene.renderer.setSize(window.innerWidth, window.innerHeight);
+
+        }
+
+        function onMouseClick( event ) {
+            // calculate mouse position in normalized device coordinates
+            // (-1 to +1) for both components
+            mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+            // update the picking ray with the camera and mouse position
+            raycaster.setFromCamera( mouse.clone(), scene.camera );
+
+            // calculate objects intersecting the picking ray
+            let intersects = raycaster.intersectObjects( scene.children[0].children );
+            
+            for ( let i = 0; i < intersects.length; i++ ) {
+                if(intersects[i].object.constructor.name === "Airport"){
+                    if(isNewRoute){
+                        let index = newRoute.indexOf(intersects[i].object.info._id)
+                        if (index === -1){
+                            newRoute.push(intersects[i].object.info._id);
+                            newRouteObjs.push(intersects[i].object);
+                            
+                            intersects[i].object.scale.set(1.75,1.75,1.75);
+                            intersects[i].object.material.color.set(0x00CE14);
+                        }
+                        else{
+                            newRouteObjs[index].scale.set(1,1,1);
+                            newRouteObjs[index].material.color.set(0xCC2828);
+                            
+                            newRoute.splice(index, 1);
+                            newRouteObjs.splice(index, 1);
+                        }
+                        
+                        document.getElementById("routeList").innerHTML = "";
+
+                        for(let i = 0; i < newRoute.length; i++){
+                            document.getElementById("routeList").innerHTML += "<li class='list-group-item'>" + newRoute[i] + "</li>"
+                        }
+                    }
+                    console.log(intersects[i].object.info.name);
+                    document.getElementById("Airport").innerText = intersects[i].object.info.name;
+                    document.getElementById("AirportInfo").innerText = intersects[i].object.info;
+                    document.getElementById("AirportImg").src="https://maps.googleapis.com/maps/api/staticmap?center="+ intersects[i].object.info.lat + "," + intersects[i].object.info.lon + "&zoom=8&size=400x250&key=AIzaSyCaqRZpDr07TXFnlyLr6ZOKJYCwwpBTbW0";
+                    
+                    if (selectedAirport !== undefined){
+                        selectedAirport.scale.set(1,1,1);
+                        selectedAirport.material.color.set(0xCC2828);
+                        if (isNewRoute)
+                            selectedAirport = undefined;
+                    }
+                    
+                    if (!isNewRoute){
+                        selectedAirport = intersects[i].object;
+                        selectedAirport.scale.set(1.75,1.75,1.75);
+                        selectedAirport.material.color.set(0x00B9F2);
+                    }
+                    break;
+                }
+            }
+        }
+        
+        function onMouseMove(){
+            // calculate mouse position in normalized device coordinates
+            // (-1 to +1) for both components
+            mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+            // update the picking ray with the camera and mouse position
+            raycaster.setFromCamera( mouse.clone(), scene.camera );
+
+            // calculate objects intersecting the picking ray
+            let intersects = raycaster.intersectObjects( scene.children[0].children );
+            
+            for ( let i = 0; i < intersects.length; i++ ) {
+                if(intersects[i].object.constructor.name === "Airport"){
+                    let hoversOverAirport_old = hoversOverAirport;
+                    hoversOverAirport = intersects[i].object;
+                    
+                    if (hoversOverAirport !== hoversOverAirport_old){
+                        if (hoversOverAirport_old !== undefined && hoversOverAirport_old !== selectedAirport)
+                            hoversOverAirport_old.scale.set(1,1,1);
+                        if (hoversOverAirport !== selectedAirport)
+                            hoversOverAirport.scale.set(2.5,2.5,2.5);
+                    }
+                    break;
+                }
+                else{
+                    if (hoversOverAirport !== undefined){
+                        if (hoversOverAirport !== selectedAirport)
+                            hoversOverAirport.scale.set(1,1,1);
+                        hoversOverAirport = undefined;
+                    }
+                }
+            }
+        }
+
+        function newroute(){
+            isNewRoute = true;
+            
+            if (selectedAirport !== undefined){
+                selectedAirport.scale.set(1,1,1);
+                selectedAirport.material.color.set(0xCC2828);
+                selectedAirport = undefined;
+            }
+
+            document.getElementById("newRouteButton").innerText = "Add route";
+            document.getElementById("newRouteButton").onclick = addroute;
+            
+        }
+
+        async function addroute(){
+            // Reset button
+            document.getElementById("newRouteButton").innerText = "New route";
+            document.getElementById("newRouteButton").onclick = newroute;
+
+            // Parse to server query
+            let destinations = new Object();
+            for(let i = 0; i < newRoute.length; i++){
+                destinations['destinations[' + i + ']'] = newRoute[i];
+                
+                newRouteObjs[i].scale.set(1,1,1);
+                newRouteObjs[i].material.color.set(0xCC2828);
+            }
+            // Create form body to x-form-urlenformed
+            let formBody = [];
+            for (var property in destinations) {
+              var encodedKey = encodeURIComponent(property);
+              var encodedValue = encodeURIComponent(destinations[property]);
+              formBody.push(encodedKey + "=" + encodedValue);
+            }
+            formBody = formBody.join("&");
+
+            console.log(formBody);
+            console.log(getCookie("token"));
+        
+            // Post new route to server.
+            let response = await fetch('http://server.lolwuz.com:3000/airliner/' + getCookie("_id") + '/route', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Authorization": "JWT " + getCookie("token")
+                },
+                body: formBody
+            });
+         
+            console.log(newRoute);
+            // Create new visual route, only temporary. 
+            let airports = [];
+            for(let i = 0; i < newRoute.length; i++){
+                console.log(newRoute[i]);
+                for(let ii = 0; ii < scene.children[0].airportArray.length; ii++){
+                    if(newRoute[i] === scene.children[0].airportArray[ii].info._id){
+                        console.log("true");
+                        airports.push(scene.children[0].airportArray[ii]);
+                    }
+                }
+            }
+
+            console.log(airports);
+            let new_route = new Route(airports, new Airplane(0.01, 1, 0.01));
+            scene.children[0].routeArray.push(new_route);
+            scene.children[0].add(new_route); 
+
+            isNewRoute = false;
+            newRoute = []; 
+        }
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+        }
+
+    </script>
+</body>
+</html>
