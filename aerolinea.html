@@ -55,7 +55,6 @@
         const clock = new THREE.Clock();
 
         var isNewRoute = false;
-        var newRoute = [];
         var newRouteObjs = [];
         var selectedAirport;
         var hoversOverAirport;
@@ -109,9 +108,8 @@
             for ( let i = 0; i < intersects.length; i++ ) {
                 if(intersects[i].object.constructor.name === "Airport"){
                     if(isNewRoute){
-                        let index = newRoute.indexOf(intersects[i].object.info._id)
+                        let index = newRouteObjs.indexOf(intersects[i].object)
                         if (index === -1){
-                            newRoute.push(intersects[i].object.info._id);
                             newRouteObjs.push(intersects[i].object);
                             
                             intersects[i].object.scale.set(1.75,1.75,1.75);
@@ -121,14 +119,13 @@
                             newRouteObjs[index].scale.set(1,1,1);
                             newRouteObjs[index].material.color.set(0xCC2828);
                             
-                            newRoute.splice(index, 1);
                             newRouteObjs.splice(index, 1);
                         }
                         
                         document.getElementById("routeList").innerHTML = "";
 
-                        for(let i = 0; i < newRoute.length; i++){
-                            document.getElementById("routeList").innerHTML += "<li class='list-group-item'>" + newRoute[i] + "</li>"
+                        for(let i = 0; i < newRouteObjs.length; i++){
+                            document.getElementById("routeList").innerHTML += "<li class='list-group-item'>" + newRouteObjs[i].info.name + "</li>"
                         }
                     }
                     console.log(intersects[i].object.info.name);
@@ -209,8 +206,8 @@
 
             // Parse to server query
             let destinations = new Object();
-            for(let i = 0; i < newRoute.length; i++){
-                destinations['destinations[' + i + ']'] = newRoute[i];
+            for(let i = 0; i < newRouteObjs.length; i++){
+                destinations['destinations[' + i + ']'] = newRouteObjs[i].info._id;
                 
                 newRouteObjs[i].scale.set(1,1,1);
                 newRouteObjs[i].material.color.set(0xCC2828);
@@ -237,21 +234,8 @@
                 body: formBody
             });
          
-            console.log(newRoute);
             // Create new visual route, only temporary. 
-            let airports = [];
-            for(let i = 0; i < newRoute.length; i++){
-                console.log(newRoute[i]);
-                for(let ii = 0; ii < scene.children[0].airportArray.length; ii++){
-                    if(newRoute[i] === scene.children[0].airportArray[ii].info._id){
-                        console.log("true");
-                        airports.push(scene.children[0].airportArray[ii]);
-                    }
-                }
-            }
-
-            console.log(airports);
-            let new_route = new Route(airports, new Airplane(0.01, 1, 0.01));
+            let new_route = new Route(newRouteObjs, new Airplane(0.01, 1, 0.01));
             scene.children[0].routeArray.push(new_route);
             scene.children[0].add(new_route); 
 
