@@ -17,7 +17,7 @@ canvas {
     width: 25%; 
     height: 45%;
 
-    opacity: 0.8;
+    opacity: 0.5;
 }
 
 #routeCard{
@@ -28,7 +28,7 @@ canvas {
     width: 25%;
     height: 30%;
 
-    opacity: 0.8;
+    opacity: 0.5;
 }
 
 #routeListBody{
@@ -45,7 +45,7 @@ canvas {
     width: 25%;
     height: 56%;
 
-    opacity: 0.8;
+    opacity: 0.5;
 }
 
 .routeOverflow{
@@ -60,7 +60,7 @@ canvas {
     left: 1%;
     height: 8%;
 
-    opacity: 0.8;
+    opacity: 0.5;
 }
 
 

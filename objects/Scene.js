@@ -8,7 +8,8 @@ class Scene extends THREE.Scene {
         this.renderer = new THREE.WebGLRenderer(
             {
                 antialias: true,
-                canvas: gameCanvas
+                canvas: gameCanvas,
+                alpha: true
             }
         );
         this.renderer.setClearColor(0x00264d, 1);
@@ -40,17 +41,10 @@ class Scene extends THREE.Scene {
 						path + 'pz' + format, path + 'mz' + format
 					];
         let cubeMaterial = new THREE.CubeTextureLoader().load(urls);
+        cubeMaterial.format = THREE.RGBFormat;
 
-        let material = new THREE.MeshBasicMaterial({
-            map: cubeMaterial,
-            side: THREE.DoubleSide
-        });
-
-
-        this.cubeMesh = new THREE.Mesh(new THREE.BoxGeometry(100, 100, 100), material);
-        this.add(this.cubeMesh);
-
-    
+        this.background = cubeMaterial;
+   
     }
 
     addLight() {

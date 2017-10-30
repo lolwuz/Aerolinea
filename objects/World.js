@@ -24,6 +24,18 @@ class World extends THREE.Object3D {
         this.airportArray = [];
         this.routeArray = [];
 
+        // SUPER SIMPLE GLOW EFFECT
+	    // use sprite because it appears the same from all angles
+	    var spriteMaterial = new THREE.SpriteMaterial( 
+        { 
+            map: new THREE.ImageUtils.loadTexture( './src/textures/glow.png' ), 
+            useScreenCoordinates: false,
+            color: 0x0000ff, transparent: false, blending: THREE.AdditiveBlending
+        });
+        var sprite = new THREE.Sprite( spriteMaterial );
+        sprite.scale.set(3, 3, 1.0);
+        this.add(sprite); // this centers the glow at the mesh
+
         this.getAirportsFromAPI();
     }
 
