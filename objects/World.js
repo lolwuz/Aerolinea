@@ -10,7 +10,7 @@ class World extends THREE.Object3D {
         // let earthRough = new THREE.TextureLoader().load("./src/textures/EarthSpec.jpg");
         let earthMaterial = new THREE.MeshStandardMaterial({
             metalness: 0,
-            roughness: 0.5,
+            roughness: 0.7,
             map: earthTexture,
             bumpMap: earthTextureE,
             bumpScale: 0.005,
@@ -54,7 +54,6 @@ class World extends THREE.Object3D {
             let airports = [];
             for(let ii = 0; ii < responseJson[i].destinations.length; ii++){
                 for(let iii = 0; iii < this.airportArray.length; iii++){
-                    console.log(this.airportArray[iii]._id);
                     if(responseJson[i].destinations[ii] === this.airportArray[iii].info._id){
                         airports.push(this.airportArray[iii]);
                     }
@@ -66,6 +65,20 @@ class World extends THREE.Object3D {
                 this.routeArray.push(new_route);
                 this.add(new_route); 
             }
+        }
+
+        for(let i = 0; i < this.routeArray.length; i++){
+            let routeString = "";
+
+            console.log(this.routeArray);
+            for(let ii = 0; ii < this.routeArray[i].airports.length; ii++){
+                routeString += this.routeArray[i].airports[ii].info.code;
+                if(ii !== this.routeArray[i].airports.length - 1){
+                    routeString += " -> ";
+                }      
+            }
+            console.log(routeString);
+            document.getElementById("existingRouteList").innerHTML += "<li class='list-group-item list-group-item-action'>" + routeString + "</li>"; 
         }
     }
 }
