@@ -74,6 +74,7 @@
         var scene;
         var raycaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2();
+        var mouseDown = new THREE.Vector2();
         const clock = new THREE.Clock();
 
         var isNewRoute = false;
@@ -93,7 +94,8 @@
             scene = new Scene();
             airliner = new Airliner();
             window.addEventListener('resize', onWindowResize, false);
-            window.addEventListener( 'click', onMouseClick, false );
+            window.addEventListener('mousedown', onMouseDown, false);
+            window.addEventListener('mouseup', onMouseUp, false);
             window.addEventListener('mousemove', onMouseMove, false);
 
             for (let i=0; i< scene.children[0].children.length; i++) {
@@ -120,65 +122,80 @@
             resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
 
         }
+        
+        function onMouseDown(event){
+            // calculate mouse position in normalized device coordinates
+            // (-1 to +1) for both components
+            mouseDown.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+            mouseDown.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        }
 
-        function onMouseClick( event ) {
+        function onMouseUp(event){
             // calculate mouse position in normalized device coordinates
             // (-1 to +1) for both components
             mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
             mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
-            // update the picking ray with the camera and mouse position
-            raycaster.setFromCamera( mouse.clone(), scene.camera );
+            if (mouseDown.x == mouse.x && mouseDown.y == mouse.y){
+                // update the picking ray with the camera and mouse position
+                raycaster.setFromCamera( mouse.clone(), scene.camera );
 
-            // calculate objects intersecting the picking ray
-            let intersects = raycaster.intersectObjects( scene.children[0].children );
-            
-            for ( let i = 0; i < intersects.length; i++ ) {
-                if(intersects[i].object.constructor.name === "Airport"){
-                    if(isNewRoute){
-                        let index = newRouteObjs.indexOf(intersects[i].object)
-                        if (index === -1){
-                            newRouteObjs.push(intersects[i].object);
-                            
-                            intersects[i].object.scale.set(1.75,1.75,1.75);
-                            intersects[i].object.material.color.set(0x00CE14);
-                        }
-                        else{
-                            newRouteObjs[index].scale.set(1,1,1);
-                            newRouteObjs[index].material.color.set(0xCC2828);
-                            
-                            newRouteObjs.splice(index, 1);
-                        }
-                        
-                        document.getElementById("routeList").innerHTML = "";
+                // calculate objects intersecting the picking ray
+                let intersects = raycaster.intersectObjects( scene.children[0].children );
 
-                        for(let i = 0; i < newRouteObjs.length; i++){
-                            document.getElementById("routeList").innerHTML += "<li class='list-group-item'>" + newRouteObjs[i].info.name + "</li>"
+                // Deselect all elements
+                deselectroute()
+                document.getElementById("infoCard").style.opacity = '0';
+                if (selectedAirport !== undefined){
+                    selectedAirport.scale.set(1,1,1);
+                    selectedAirport.material.color.set(0xCC2828);
+                    selectedAirport = undefined;
+                }
+
+                for ( let i = 0; i < intersects.length; i++ ) {
+                    if(intersects[i].object.constructor.name === "Airport"){
+                        if(isNewRoute){
+                            // Check if the selected airport is already in the list of selected airports
+                            let index = newRouteObjs.indexOf(intersects[i].object)
+                            if (index === -1){
+                                // Push the airport to the array, change scaling and make it green
+                                newRouteObjs.push(intersects[i].object);
+
+                                intersects[i].object.scale.set(1.75,1.75,1.75);
+                                intersects[i].object.material.color.set(0x00CE14);
+                            }
+                            else{
+                                // Reset scaling and colour, and remove the item from the array
+                                newRouteObjs[index].scale.set(1,1,1);
+                                newRouteObjs[index].material.color.set(0xCC2828);
+
+                                newRouteObjs.splice(index, 1);
+                            }
+
+                            document.getElementById("routeList").innerHTML = "";
+
+                            for(let i = 0; i < newRouteObjs.length; i++){
+                                document.getElementById("routeList").innerHTML += "<li class='list-group-item'>" + newRouteObjs[i].info.name + "</li>"
+                            }
                         }
+                        else{                    
+                            selectedAirport = intersects[i].object;
+                            selectedAirport.scale.set(1.75,1.75,1.75);
+                            selectedAirport.material.color.set(0x00B9F2);
+                        }
+                        // Display airport information
+                        document.getElementById("infoCard").style.opacity = '0.75';
+                        document.getElementById("Airport").innerText = intersects[i].object.info.name;
+                        document.getElementById("AirportInfo").innerText = intersects[i].object.info;
+                        document.getElementById("AirportImg").src="https://maps.googleapis.com/maps/api/staticmap?center="+ intersects[i].object.info.lat + "," + intersects[i].object.info.lon + "&zoom=8&size=400x250&key=AIzaSyCaqRZpDr07TXFnlyLr6ZOKJYCwwpBTbW0";
+
+                        break;
                     }
-                    console.log(intersects[i].object.info.name);
-                    document.getElementById("Airport").innerText = intersects[i].object.info.name;
-                    document.getElementById("AirportInfo").innerText = intersects[i].object.info;
-                    document.getElementById("AirportImg").src="https://maps.googleapis.com/maps/api/staticmap?center="+ intersects[i].object.info.lat + "," + intersects[i].object.info.lon + "&zoom=8&size=400x250&key=AIzaSyCaqRZpDr07TXFnlyLr6ZOKJYCwwpBTbW0";
-                    
-                    if (selectedAirport !== undefined){
-                        selectedAirport.scale.set(1,1,1);
-                        selectedAirport.material.color.set(0xCC2828);
-                        if (isNewRoute)
-                            selectedAirport = undefined;
-                    }
-                    
-                    if (!isNewRoute){
-                        selectedAirport = intersects[i].object;
-                        selectedAirport.scale.set(1.75,1.75,1.75);
-                        selectedAirport.material.color.set(0x00B9F2);
-                    }
-                    break;
                 }
             }
         }
         
-        function onMouseMove(){
+        function onMouseMove(event){
             // calculate mouse position in normalized device coordinates
             // (-1 to +1) for both components
             mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
@@ -289,9 +306,11 @@
         }
         
         function selectroute(index){
+            // Reset old selection, and select new route
             deselectroute();
-            
             selectedRoute = scene.children[0].routeArray[index];
+            
+            // Change lineWidth of all routeLines of the selected route
             for (let i = 1; i < selectedRoute.children.length; i++){
                 selectedRoute.children[i].material.uniforms.lineWidth.value = 15;
                 selectedRoute.children[i].material.depthTest = false;
@@ -299,10 +318,12 @@
         }
         function deselectroute(){
             if (selectedRoute !== undefined){
+                // Reset the lineWidth of all routeLines of teh selected route
                 for (let i = 1; i < selectedRoute.children.length; i++){
                     selectedRoute.children[i].material.uniforms.lineWidth.value = 5;
                     selectedRoute.children[i].material.depthTest = true;
                 }
+                selectedRoute = undefined;
             }
         }
 
