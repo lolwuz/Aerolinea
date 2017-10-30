@@ -10,10 +10,8 @@ canvas {
 
 #infoCard{
     position: absolute;
-
     top: 1%;
     left: 1%;
-
     width: 25%; 
     height: 45%;
 
@@ -22,11 +20,45 @@ canvas {
 
 #routeCard{
     position: absolute;
+    overflow-y: scroll;
 
     top: 1%;
     right: 1%;
-
     width: 15%;
+    height: 30%;
 
     opacity: 0.8;
+}
+
+#routeListCard{
+    position: absolute;
+    overflow-y: scroll;
+
+    top: 32%;
+    right: 1%;
+
+    width: 15%;
+    height: 56%;
+
+    opacity: 0.8;
+
+}
+
+#airlinerCard{
+    position: absolute;
+    bottom: 1%;
+    right: 1%;
+    height: 10%;
+    width: 50%;
+
+    opacity: 0.8;
+}
+
+
+#airlinerName{
+    display: inline;
+}
+
+#airlinerMoney{
+    display: inline;
 }

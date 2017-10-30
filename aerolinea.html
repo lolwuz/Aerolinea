@@ -27,19 +27,41 @@
     </div>
 
     <div id="routeCard" class="card">
-        <ul id="routeList" class="list-group list-group-flush">
-        </ul>
         <div class="card-body">
             <a id="newRouteButton" href="#" class="btn btn-primary" onclick="newroute()">New route</a>
         </div>
+        <ul id="routeList" class="list-group list-group-flush">
+        </ul>
+        
+    </div>
+
+    <div id="routeListCard" class="card">
+        <div class="card-body">
+
+        </div>
     </div>
  
+    <div id="airlinerCard" class="card">
+        <div class="card-body">
+            <h3 id="airlinerName" class="text-center">Airliner</h3>
+            <button type="button" class="btn btn-primary">
+                Routes <span id="airlinerRoutes" class="badge badge-light">0</span>
+            </button>
+            <button type="button" class="btn btn-primary">
+                Planes <span id="airlinerPlanes" class="badge badge-light">0</span>
+            </button>
+
+            <h4 id="airlinerMoney">0</h4>
+        </div>
+    </div>
+    
 
     <canvas id="gameCanvas"></canvas>
 
     <script src="javascript/three.js"></script>
     <script src="javascript/controls/OrbitControls.js"></script>
     <script src="javascript/OBJLoader.js"></script>
+    <script src="objects/Airliner.js"></script>
     <script src="objects/Scene.js"></script>
     <script src="objects/World.js"></script>
     <script src="objects/Airport.js"></script>
@@ -48,7 +70,6 @@
     <script src="objects/RouteLine.js"></script>
     <script src="objects/Clouds.js"></script>
     <script>
-
         var scene;
         var raycaster = new THREE.Raycaster();
         var mouse = new THREE.Vector2();
@@ -60,12 +81,15 @@
         var selectedAirport;
         var hoversOverAirport;
 
+        // Airliner 
+        var airliner; 
 
         init();
         animate();
 
         function init() {
             scene = new Scene();
+            airliner = new Airliner();
             window.addEventListener('resize', onWindowResize, false);
             window.addEventListener( 'click', onMouseClick, false );
             window.addEventListener('mousemove', onMouseMove, false);
@@ -254,6 +278,9 @@
             let new_route = new Route(airports, new Airplane(0.01, 1, 0.01));
             scene.children[0].routeArray.push(new_route);
             scene.children[0].add(new_route); 
+
+            // Update airliner
+            airliner.update();
 
             isNewRoute = false;
             newRoute = []; 
