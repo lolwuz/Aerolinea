@@ -309,6 +309,7 @@
         }
         
         function cancelnewroute(){
+            // Reset elements which were created or changed in the process
             for (let i = 0; i < newRouteObjs.length; i++){
                 newRouteObjs[i].scale.set(1,1,1);
                 newRouteObjs[i].material.color.set(0xCC2828);
