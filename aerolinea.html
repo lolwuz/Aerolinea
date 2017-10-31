@@ -291,8 +291,21 @@
                 newRouteObjs = []; 
                 document.getElementById("routeList").innerHTML = "";
                 document.getElementById("routeListButtons").removeChild(newRouteButton);
-                document.getElementById("routeListButtons").innerHTML += '<a id="newRouteButton" href="#" class="btn btn-primary" onclick="addroute()">Add route</a>';
+                document.getElementById("routeListButtons").innerHTML += '<a id="newRouteButton" href="#" class="card-link" onclick="newroute()">New route</a>';
                 document.getElementById("routeListButtons").removeChild(cancelNewRouteButton);
+                
+                document.getElementById("existingRouteList").innerHTML = "";
+                for(let i = 0; i < scene.world.routeArray.length; i++){
+                    let routeString = "";
+
+                    for(let ii = 0; ii < scene.world.routeArray[i].airports.length; ii++){
+                        routeString += scene.world.routeArray[i].airports[ii].info.code;
+                        if(ii !== scene.world.routeArray[i].airports.length - 1){
+                            routeString += " -> ";
+                        }      
+                    }
+                    document.getElementById("existingRouteList").innerHTML += "<li class='list-group-item list-group-item-action' onclick='selectroute(" + i + ")'>" + routeString + "</li>"; 
+                }
             }
         }
         

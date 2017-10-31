@@ -30,7 +30,6 @@ class Scene extends THREE.Scene {
         this.add(this.world);
 
         this.addLight();
-        this.add(new axisHelper(5));
 
         // Load cubeMap
         let path = "./src/starmap/";

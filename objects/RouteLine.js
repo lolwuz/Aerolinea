@@ -155,16 +155,6 @@ class RouteLine extends THREE.Mesh{
         return geometry;
     }
 }
-
-class axisHelper extends THREE.Object3D{
-    constructor(length) {
-        super();
-        
-        this.add(new THREE.ArrowHelper( new THREE.Vector3(1,0,0), new THREE.Vector3(0,0,0), length, 0xFF0000, 0.01, 0.01));
-        this.add(new THREE.ArrowHelper( new THREE.Vector3(0,1,0), new THREE.Vector3(0,0,0), length, 0x00FF00, 0.01, 0.01));
-        this.add(new THREE.ArrowHelper( new THREE.Vector3(0,0,1), new THREE.Vector3(0,0,0), length, 0x0000FF, 0.01, 0.01));
-    }
-}
         
         
         
