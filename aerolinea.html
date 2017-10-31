@@ -292,7 +292,6 @@
                 document.getElementById("routeListButtons").removeChild(newRouteButton);
                 document.getElementById("routeListButtons").innerHTML += '<a id="newRouteButton" href="#" class="card-link" onclick="newroute()">New route</a>';
                 document.getElementById("routeListButtons").removeChild(cancelNewRouteButton);
-<<<<<<< HEAD
 
                 let routeString = "";
                 for(let i = 0; i < newRouteObjs.length; i++){
@@ -305,22 +304,7 @@
                 document.getElementById("existingRouteList").innerHTML += "<li class='list-group-item list-group-item-action' onclick='selectroute(" + (scene.children[0].routeArray.length - 1) + ")'>" + routeString + "</li>"; 
 
                 isNewRoute = false;
-                newRouteObjs = []; 
-=======
-                
-                document.getElementById("existingRouteList").innerHTML = "";
-                for(let i = 0; i < scene.world.routeArray.length; i++){
-                    let routeString = "";
-
-                    for(let ii = 0; ii < scene.world.routeArray[i].airports.length; ii++){
-                        routeString += scene.world.routeArray[i].airports[ii].info.code;
-                        if(ii !== scene.world.routeArray[i].airports.length - 1){
-                            routeString += " -> ";
-                        }      
-                    }
-                    document.getElementById("existingRouteList").innerHTML += "<li class='list-group-item list-group-item-action' onclick='selectroute(" + i + ")'>" + routeString + "</li>"; 
-                }
->>>>>>> 13800e6a2b3666f1515147dc7febd1cd3911e773
+                newRouteObjs = [];                        
             }
         }
         
