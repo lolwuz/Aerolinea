@@ -67,6 +67,29 @@
                             <div class="form-group">
                                 <input type="text" class="form-control" id="InputAirlinerName" placeholder="Airliner name">
                             </div>
+                            <div class="form-group">
+                                <select>
+                                    <option selected>Choose color...</option>
+                                    <option value="1">Brown</option>
+                                    <option value="2">Army green</option>
+                                    <option value="3">Green</option>
+                                    <option value="4">Turquoise</option>
+                                    <option value="5">Blue</option>
+                                    <option value="6">Purple</option>
+                                    <option value="7">Lavendel</option>
+                                    <option value="8">Pink</option>
+                                    <option value="9">Rosé</option>
+                                    <option value="10">Nederland</option>
+                                    <option value="11">Gold</option>
+                                    <option value="12">Lime</option>
+                                    <option value="13">Poison green</option>
+                                    <option value="14">KLM Blue</option>
+                                    <option value="15">Dark Blue</option>
+                                    <option value="16">Turkish purple</option>
+                                    <option value="17">Beer pink</option>
+                                    <option value="18">Whine</option>
+                                </select>
+                            </div>
                             
                             <a class="btn btn-primary" onclick="register()">Register</a>
                         </form>
@@ -111,6 +134,7 @@
                 console.log(data);
                 document.cookie = "token=" + data.token;
                 document.cookie = "_id=" + data._id;
+                document.cookie = "color=" + data.color;
                 // Redirect to the game
                 window.location.replace("aerolinea.html");
             }
@@ -126,12 +150,15 @@
             let passwordForm = document.getElementById("registerForm").elements[1].value;
             let usernameForm = document.getElementById("registerForm").elements[2].value;
             let airlinerNameForm = document.getElementById("registerForm").elements[3].value;
+            let airlinerColorForm = document.getElementById("registerForm").elements[4].value;
 
+            console.log(airlinerColorForm);
             let details = {
                 'email': emailForm,
                 'password': passwordForm,
                 'fullName': usernameForm,
                 'name': airlinerNameForm,
+                'color': airlinerColorForm,
                 'money': 100000
             };
             

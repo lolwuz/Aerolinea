@@ -50,7 +50,6 @@
                 Planes <span id="airlinerPlanes" class="badge badge-light">0</span>
             </button>
 
-            <h4 id="airlinerMoney">0</h4>
         </div>
     </div>
     
@@ -279,7 +278,7 @@
                 });
 
                 // Create new visual route, only temporary. 
-                let new_route = new Route(newRouteObjs, new Airplane(0.01, 1, 0.01));
+                let new_route = new Route(newRouteObjs, new Airplane(0.01, getCookie("color"), 0.01));
                 scene.children[0].routeArray.push(new_route);
                 scene.children[0].add(new_route); 
 

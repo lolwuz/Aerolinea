@@ -13,6 +13,5 @@ class Airliner {
         document.getElementById("airlinerName").innerText = this.data.name;
         document.getElementById("airlinerRoutes").innerText = this.data.routes.length;
         document.getElementById("airlinerPlanes").innerText = this.data.planes.length;
-        document.getElementById("airlinerMoney").innerText = "Money: " + this.data.money;
     }
 }
