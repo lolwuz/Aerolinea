@@ -18,12 +18,11 @@
 
 <body>
     <div id="infoCard" class="card">
-        <img id="AirportImg" class="card-img-top" src="..." alt="Card image cap">
         <div class="card-body">
-            <h4 id="Airport">Airport Name</h4>
-            <p id="AirportInfo" class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Buy landing rights</a>
+            <h3 id="Airport">Airport Name</h3>
+            <div id="AirportInfo" class="card-text"></div>
         </div>
+        <img id="AirportImg" class="card-img-top" src="">
     </div>
 
     <div id="routeCard" class="card">
@@ -186,8 +185,14 @@
                         // Display airport information
                         document.getElementById("infoCard").style.opacity = '0.75';
                         document.getElementById("Airport").innerText = intersects[i].object.info.name;
-                        document.getElementById("AirportInfo").innerText = intersects[i].object.info;
-                        document.getElementById("AirportImg").src="https://maps.googleapis.com/maps/api/staticmap?center="+ intersects[i].object.info.lat + "," + intersects[i].object.info.lon + "&zoom=8&size=400x250&key=AIzaSyCaqRZpDr07TXFnlyLr6ZOKJYCwwpBTbW0";
+
+                        document.getElementById("AirportInfo").innerHTML = 
+                            "<h6><b>IATA Code: </b>" + intersects[i].object.info.code + "</h6>"
+                            + "<p><b>longitude: </b>" + intersects[i].object.info.lat + "<b> latitude: </b>" +intersects[i].object.info.lon +"</p>"
+                            + "<p><b>city: </b>" + intersects[i].object.info.city + "<b> state: </b>" + intersects[i].object.info.state 
+                            + "<b> time-zone: </b>" + intersects[i].object.info.tz + "<b> elevation: </b>" + intersects[i].object.info.elev + "ft</p>";
+
+                        document.getElementById("AirportImg").src="https://maps.googleapis.com/maps/api/staticmap?center="+ intersects[i].object.info.lat + "," + intersects[i].object.info.lon + "&zoom=8&size=400x200&key=AIzaSyCaqRZpDr07TXFnlyLr6ZOKJYCwwpBTbW0";
 
                         break;
                     }

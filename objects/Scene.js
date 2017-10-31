@@ -43,7 +43,7 @@ class Scene extends THREE.Scene {
         let cubeMaterial = new THREE.CubeTextureLoader().load(urls);
         cubeMaterial.format = THREE.RGBFormat;
 
-        this.background = cubeMaterial;
+        //this.background = cubeMaterial;
    
     }
 
