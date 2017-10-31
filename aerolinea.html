@@ -287,12 +287,24 @@
                     newRouteObjs[i].scale.set(1,1,1);
                     newRouteObjs[i].material.color.set(0xCC2828);
                 }
-                isNewRoute = false;
-                newRouteObjs = []; 
+                
                 document.getElementById("routeList").innerHTML = "";
                 document.getElementById("routeListButtons").removeChild(newRouteButton);
                 document.getElementById("routeListButtons").innerHTML += '<a id="newRouteButton" href="#" class="btn btn-primary" onclick="addroute()">Add route</a>';
                 document.getElementById("routeListButtons").removeChild(cancelNewRouteButton);
+
+                let routeString = "";
+                for(let i = 0; i < newRouteObjs.length; i++){
+                    console.log(newRouteObjs[i].info.code);
+                    routeString += newRouteObjs[i].info.code;
+                    if(i !== newRouteObjs.length - 1){
+                        routeString += " -> ";
+                    }      
+                }
+                document.getElementById("existingRouteList").innerHTML += "<li class='list-group-item list-group-item-action' onclick='selectroute(" + (scene.children[0].routeArray.length - 1) + ")'>" + routeString + "</li>"; 
+
+                isNewRoute = false;
+                newRouteObjs = []; 
             }
         }
         
